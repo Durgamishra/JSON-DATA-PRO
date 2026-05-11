@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Json Data Pro | AI-Powered JSON Generator</title>
+    <!-- Fonts -->
+    <link rel="icon" type="image/png" href="Durga_logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Background Effects -->
+    <div class="bg-grid"></div>
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+    <div class="glow-orb orb-3"></div>
+
+    <!-- Sticky Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="ph ph-brackets-curly"></i>
+                <span>Json Data <strong>Pro</strong></span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#demo">Demo</a></li>
+                <li><a href="#why">Why Us</a></li>
+            </ul>
+            <div class="nav-actions">
+              <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="btn-ghost"><i class="ph ph-github-logo"></i> GitHub</a>
+              <a href="#" class="btn-primary">Get Started</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Hero Section -->
+    <header class="hero" id="hero">
+        <div class="hero-container fade-in-up">
+            <div class="hero-content">
+                <div class="badge">
+                    <span class="badge-dot"></span> Durga's AI Model 2.0 Now Live
+                </div>
+                <h1>Convert Human Language into <span class="text-gradient">Structured JSON</span> Instantly</h1>
+                <p>The ultimate AI-powered developer tool. Describe your data structure in natural language, and let our engine generate production-ready, perfectly formatted JSON in milliseconds.</p>
+                
+                <div class="input-area glass-panel">
+                    <textarea id="prompt-input" placeholder="e.g. Create a user profile with a name, email, nested address object, and an array of 3 recent order IDs..."></textarea>
+                    <div class="input-footer">
+                        <span><i class="ph ph-sparkle text-neon-purple"></i> AI Engine Ready</span>
+                        <button id="generate-btn" class="btn-glow">
+                            Generate JSON <i class="ph ph-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-preview">
+                <div class="code-window glass-panel">
+                    <div class="window-header">
+                        <div class="window-dots">
+                            <span class="dot red"></span>
+                            <span class="dot yellow"></span>
+                            <span class="dot green"></span>
+                        </div>
+                        <div class="window-title">output.json</div>
+                        <button class="copy-btn" id="copy-btn" title="Copy to clipboard">
+                            <i class="ph ph-copy"></i>
+                        </button>
+                    </div>
+                    <div class="window-body">
+                        <div class="line-numbers">
+                            1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11
+                        </div>
+                        <pre><code id="json-output" class="language-json">
+<span class="json-comment">// Awaiting prompt input...</span>
+<span class="json-comment">// Describe your data on the left</span>
+<span class="json-comment">// and click Generate.</span>
+                        </code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="section-header fade-in-up">
+            <h2>Built for Modern <span class="text-gradient">Workflows</span></h2>
+            <p>Everything you need to streamline your development process and generate mock data instantly.</p>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-card glass-panel fade-in-up" style="animation-delay: 0.1s;">
+                <div class="feature-icon"><i class="ph ph-brain"></i></div>
+                <h3>AI-Powered Parsing</h3>
+                <p>State-of-the-art NLP models translate vague natural language into strictly typed JSON schemas instantly.</p>
+            </div>
+            <div class="feature-card glass-panel fade-in-up" style="animation-delay: 0.2s;">
+                <div class="feature-icon"><i class="ph ph-lightning"></i></div>
+                <h3>Millisecond Response</h3>
+                <p>Optimized edge-computing architecture delivers your structured data almost before you finish typing.</p>
+            </div>
+            <div class="feature-card glass-panel fade-in-up" style="animation-delay: 0.3s;">
+                <div class="feature-icon"><i class="ph ph-brackets-curly"></i></div>
+                <h3>Developer Friendly</h3>
+                <p>Outputs follow RESTful conventions, snake_case or camelCase formatting based on your exact preference.</p>
+            </div>
+            <div class="feature-card glass-panel fade-in-up" style="animation-delay: 0.4s;">
+                <div class="feature-icon"><i class="ph ph-export"></i></div>
+                <h3>1-Click Export</h3>
+                <p>Seamlessly copy to clipboard or export directly as a .json file to plug directly into your IDE or API client.</p>
+            </div>
+            <div class="feature-card glass-panel fade-in-up" style="animation-delay: 0.5s;">
+                <div class="feature-icon"><i class="ph ph-magic-wand"></i></div>
+                <h3>Clean Formatting</h3>
+                <p>Zero syntax errors. Perfect indentation, nested arrays, and properly escaped characters guaranteed every time.</p>
+            </div>
+            <div class="feature-card glass-panel fade-in-up" style="animation-delay: 0.6s;">
+                <div class="feature-icon"><i class="ph ph-plugs"></i></div>
+                <h3>API Ready</h3>
+                <p>Integrate our engine directly into your applications with our robust REST API and webhooks.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Demo Section -->
+    <section class="demo-section" id="demo">
+        <div class="demo-container glass-panel fade-in-up">
+            <div class="demo-text">
+                <h2>See it in action.</h2>
+                <p>Watch as raw, unstructured text transforms into structured payloads in real-time.</p>
+                <ul class="demo-benefits">
+                    <li><i class="ph ph-check-circle"></i> Automate mock data generation</li>
+                    <li><i class="ph ph-check-circle"></i> Perfect for frontend testing</li>
+                    <li><i class="ph ph-check-circle"></i> Simplify QA processes</li>
+                </ul>
+            </div>
+            <div class="demo-terminal">
+                <div class="terminal-header">
+                    <i class="ph ph-terminal-window"></i> bash - demo
+                </div>
+                <div class="terminal-body">
+                    <p class="term-input"><span class="prompt-arrow">❯</span> ./json-data-pro --prompt "Generate server config with port 8080 and dev mode true"</p>
+                    <div class="term-loading" style="display:none;">[ ■ ■ ■ ■ ■ ] Processing NLP...</div>
+                    <pre class="term-output" id="demo-output"></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-brand">
+                <div class="logo">
+                    <i class="ph ph-brackets-curly"></i> Json Data <strong>Pro</strong>
+                </div>
+                <p>Empowering developers with AI-driven structured data.</p>
+            </div>
+            <div class="footer-links">
+                <div class="link-group">
+                    <h4>Product</h4>
+                    <a href="#">Features</a>
+                    <a href="#">Pricing</a>
+                    <a href="#">API Docs</a>
+                </div>
+                <div class="link-group">
+                    <h4>Company</h4>
+                    <a href="#">About</a>
+                    <a href="#">Blog</a>
+                    <a href="#">Careers</a>
+                </div>
+                <div class="link-group">
+                    <h4>Connect</h4>
+                    <a href="https://www.instagram.com/durga_mishra_18/" target="_blank" rel="noopener noreferrer"><i class="ph ph-instagram-logo"></i> Instagram</a>
+                    <a href="https://github.com" target="_blank" rel="noopener noreferrer"><i class="ph ph-github-logo"></i> GitHub</a>
+                    <a href="https://www.linkedin.com/in/durga-prasad-mishra-619899391/" target="_blank" rel="noopener noreferrer"><i class="ph ph-linkedin-logo"></i> LinkedIn</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Json Data Pro. All rights reserved.</p>
+            <div class="legal">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive Logic -->
+    <script>
+        // Hero Section AI Generation Logic
+        const generateBtn = document.getElementById('generate-btn');
+        const jsonOutput = document.getElementById('json-output');
+        const promptInput = document.getElementById('prompt-input');
+        const copyBtn = document.getElementById('copy-btn');
+
+        const mockJson = `{
+  <span class="json-key">"user"</span>: {
+    <span class="json-key">"name"</span>: <span class="json-string">"Alex Chen"</span>,
+    <span class="json-key">"email"</span>: <span class="json-string">"alex@jsondatapro.dev"</span>,
+    <span class="json-key">"address"</span>: {
+      <span class="json-key">"city"</span>: <span class="json-string">"San Francisco"</span>,
+      <span class="json-key">"zip"</span>: <span class="json-string">"94105"</span>
+    },
+    <span class="json-key">"recent_orders"</span>: [
+      <span class="json-number">10423</span>,
+      <span class="json-number">10424</span>,
+      <span class="json-number">10425</span>
+    ]
+  },
+  <span class="json-key">"status"</span>: <span class="json-string">"success"</span>,
+  <span class="json-key">"generated_at"</span>: <span class="json-string">"${new Date().toISOString()}"</span>
+}`;
+        // Typing effect that parses HTML
+        function typeHTML(htmlString, element, speed) {
+            let i = 0;
+            let isTag = false;
+            let text = '';
+            
+            function type() {
+                if (i < htmlString.length) {
+                    text += htmlString.charAt(i);
+                    element.innerHTML = text;
+                    if (htmlString.charAt(i) === '<') isTag = true;
+                    if (htmlString.charAt(i) === '>') isTag = false;
+                    
+                    i++;
+                    if (isTag) {
+                        type(); // skip delay for tags
+                    } else {
+                        setTimeout(type, speed);
+                    }
+                }
+            }
+            type();
+        }
+
+        // Copy functionality
+        copyBtn.addEventListener('click', () => {
+            const rawText    = jsonOutput.innerText;
+            navigator.clipboard.writeText(rawText);
+            copyBtn.innerHTML = '<i class="ph ph-check text-neon-blue"></i>';
+            setTimeout(() => {
+                copyBtn.innerHTML = '<i class="ph ph-copy"></i>';
+            }, 2000);
+        });
+
+        // Terminal Demo Intersection Observer (Auto-play when scrolled into view)
+        const demoTerminal = document.getElementById('demo-output');
+        const termLoading = document.querySelector('.term-loading');
+        let demoPlayed = false;
+
+        const demoJson = `{
+  <span class="json-key">"server"</span>: {
+    <span class="json-key">"port"</span>: <span class="json-number">8080</span>,
+    <span class="json-key">"dev_mode"</span>: <span class="json-number">true</span>
+  }
+}`;
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !demoPlayed) {
+                    demoPlayed = true;
+                    setTimeout(() => {
+                        termLoading.style.display = 'block';
+                        setTimeout(() => {
+                            termLoading.style.display = 'none';
+                            typeHTML(demoJson, demoTerminal, 15);
+                        }, 1200);
+                    }, 500);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        observer.observe(document.querySelector('.demo-terminal'));
+    </script>
+</body>
+</html>
