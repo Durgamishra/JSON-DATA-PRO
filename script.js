@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================================
     // ⚙️ API CONFIGURATION (OpenRouter)
     // ==========================================
-    const API_KEY = "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";
+    const API_KEY = "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";
 
     // ==========================================
     // 🚀 MAIN GENERATE BUTTON LOGIC
