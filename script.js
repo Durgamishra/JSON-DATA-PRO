@@ -8,11 +8,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const termLoading = document.querySelector('.term-loading');
 
     // ==========================================
-    // ⚙️ API CONFIGURATION (OpenRouter)
-    // ==========================================
-    const API_KEY = "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";
-
-    // ==========================================
     // 🚀 MAIN GENERATE BUTTON LOGIC
     // ==========================================
     generateBtn.addEventListener('click', async () => {
