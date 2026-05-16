@@ -1,29 +1,43 @@
-require('dotenv').config();
+require("dotenv").config();
 
-const express = require('express');
-const cors = require('cors');
+const express = require("express");
+const cors = require("cors");
 
 const app = express();
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-const PORT = process.env.PORT || 3000;
+// Environment Variables
+const PORT = process.env.PORT || 10000;
 const API_KEY = process.env.API_KEY;
 
-// Debug check
+// Debug Check
 console.log("API KEY LOADED:", API_KEY ? "YES" : "NO");
 
-app.post('/api/generate', async (req, res) => {
-    const { prompt } = req.body;
+// Root Route
+app.get("/", (req, res) => {
+    res.send("Backend Running Successfully 🚀");
+});
 
-    if (!prompt) {
-        return res.status(400).json({
-            error: "Prompt is required"
-        });
-    }
+// Generate Route
+app.post("/api/generate", async (req, res) => {
 
-    const systemPrompt = `
+    try {
+
+        const { prompt } = req.body;
+
+        // Validate Prompt
+        if (!prompt) {
+            return res.status(400).json({
+                success: false,
+                error: "Prompt is required"
+            });
+        }
+
+        // AI System Prompt
+        const systemPrompt = `
 You are an expert JSON data generator.
 
 Convert the user's natural language request into valid JSON.
@@ -35,8 +49,7 @@ Rules:
 - No extra text
 `;
 
-    try {
-
+        // API Request
         const response = await fetch(
             "https://openrouter.ai/api/v1/chat/completions",
             {
@@ -44,7 +57,7 @@ Rules:
                 headers: {
                     "Authorization": `Bearer ${API_KEY}`,
                     "Content-Type": "application/json",
-                    "HTTP-Referer": "http://localhost:3000",
+                    "HTTP-Referer": "https://your-github-pages-url.github.io",
                     "X-Title": "Json Data Pro"
                 },
                 body: JSON.stringify({
@@ -64,31 +77,47 @@ Rules:
             }
         );
 
-        // OpenRouter error handling
+        // Handle API Errors
         if (!response.ok) {
+
             const errorText = await response.text();
 
             console.error("OpenRouter Error:", errorText);
 
             return res.status(500).json({
+                success: false,
                 error: errorText
             });
         }
 
+        // Parse API Response
         const data = await response.json();
 
         let aiText = data.choices[0].message.content.trim();
 
-        // Remove accidental markdown
+        // Remove Markdown
         aiText = aiText
-            .replace(/```json/g, '')
-            .replace(/```/g, '')
+            .replace(/```json/g, "")
+            .replace(/```/g, "")
             .trim();
 
         // Validate JSON
-        const parsedJSON = JSON.parse(aiText);
+        let parsedJSON;
 
-        // Send JSON
+        try {
+            parsedJSON = JSON.parse(aiText);
+        } catch (jsonError) {
+
+            console.error("Invalid JSON:", aiText);
+
+            return res.status(500).json({
+                success: false,
+                error: "AI returned invalid JSON",
+                raw: aiText
+            });
+        }
+
+        // Send Valid JSON
         res.json(parsedJSON);
 
     } catch (error) {
@@ -96,15 +125,21 @@ Rules:
         console.error("SERVER ERROR:", error);
 
         res.status(500).json({
+            success: false,
             error: error.message
         });
     }
 });
 
-app.listen(PORT, () => {
-    console.log(`✅ Server running on http://localhost:${PORT}`);
-
-app.get("/", (req, res) => {
-  res.send("Backend Running");
+// 404 Route
+app.use((req, res) => {
+    res.status(404).json({
+        success: false,
+        error: "Route Not Found"
+    });
 });
+
+// Start Server
+app.listen(PORT, () => {
+    console.log(`✅ Server running on port ${PORT}`);
 });
