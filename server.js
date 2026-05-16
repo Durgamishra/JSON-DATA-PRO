@@ -5,29 +5,43 @@ const cors = require("cors");
 
 const app = express();
 
-// Middleware
-app.use(cors());
+// ==========================================
+// ⚙️ MIDDLEWARE (FIXED FOR GITHUB + MOBILE)
+// ==========================================
+app.use(cors({
+    origin: "*",
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type"]
+}));
+
 app.use(express.json());
 
-// Environment Variable
+// ==========================================
+// 🔐 ENV VARIABLES
+// ==========================================
+const PORT = process.env.PORT || 10000;
 const API_KEY = process.env.API_KEY;
 
-// Debug Check
+// Debug
 console.log("API KEY LOADED:", API_KEY ? "YES" : "NO");
 
-// Root Route
+// ==========================================
+// 🏠 ROOT ROUTE
+// ==========================================
 app.get("/", (req, res) => {
     res.send("Backend Running Successfully 🚀");
 });
 
-// Generate Route
+// ==========================================
+// 🧠 GENERATE ROUTE
+// ==========================================
 app.post("/api/generate", async (req, res) => {
 
     try {
 
         const { prompt } = req.body;
 
-        // Validate Prompt
+        // Validate prompt
         if (!prompt) {
             return res.status(400).json({
                 success: false,
@@ -35,28 +49,28 @@ app.post("/api/generate", async (req, res) => {
             });
         }
 
-        // Check API Key
+        // Validate API key
         if (!API_KEY) {
             return res.status(500).json({
                 success: false,
-                error: "API_KEY is missing in environment variables"
+                error: "API_KEY missing in Render environment variables"
             });
         }
 
-        // AI System Prompt
+        // System prompt
         const systemPrompt = `
 You are an expert JSON data generator.
 
-Convert the user's natural language request into valid JSON.
+Convert the user's request into STRICT valid JSON only.
 
 Rules:
-- ONLY return valid JSON
-- No markdown
-- No explanations
-- No extra text
+- ONLY JSON output
+- NO markdown
+- NO explanation
+- NO extra text
 `;
 
-        // OpenRouter API Request
+        // OpenRouter request (FIXED HEADERS + SAFETY)
         const response = await fetch(
             "https://openrouter.ai/api/v1/chat/completions",
             {
@@ -64,7 +78,7 @@ Rules:
                 headers: {
                     Authorization: `Bearer ${API_KEY}`,
                     "Content-Type": "application/json",
-                    "HTTP-Referer": "https://your-github-username.github.io",
+                    "HTTP-Referer": "https://json-data-pro.onrender.com",
                     "X-Title": "Json Data Pro"
                 },
                 body: JSON.stringify({
@@ -84,52 +98,45 @@ Rules:
             }
         );
 
-        // Handle API Errors
+        // API error handling
         if (!response.ok) {
 
-            const errorData = await response.text();
+            const errorText = await response.text();
 
-            console.error("OpenRouter Error:", errorData);
+            console.error("OpenRouter Error:", errorText);
 
             return res.status(response.status).json({
                 success: false,
-                error: errorData
+                error: errorText
             });
         }
 
-        // Parse Response
         const data = await response.json();
 
-        // Validate Response Structure
-        if (
-            !data.choices ||
-            !data.choices[0] ||
-            !data.choices[0].message
-        ) {
+        // Safety check
+        if (!data?.choices?.[0]?.message?.content) {
             return res.status(500).json({
                 success: false,
-                error: "Invalid API response structure"
+                error: "Invalid AI response structure"
             });
         }
 
         let aiText = data.choices[0].message.content.trim();
 
-        // Remove Markdown Formatting
+        // Clean markdown
         aiText = aiText
             .replace(/```json/g, "")
             .replace(/```/g, "")
             .trim();
 
-        // Validate JSON
+        // Parse JSON safely
         let parsedJSON;
 
         try {
-
             parsedJSON = JSON.parse(aiText);
+        } catch (err) {
 
-        } catch (jsonError) {
-
-            console.error("Invalid JSON Returned:", aiText);
+            console.error("JSON Parse Error:", aiText);
 
             return res.status(500).json({
                 success: false,
@@ -138,21 +145,22 @@ Rules:
             });
         }
 
-        // Send Valid JSON Response
-        res.json(parsedJSON);
+        return res.json(parsedJSON);
 
     } catch (error) {
 
         console.error("SERVER ERROR:", error);
 
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             error: error.message
         });
     }
 });
 
-// 404 Route
+// ==========================================
+// ❌ 404 HANDLER
+// ==========================================
 app.use((req, res) => {
     res.status(404).json({
         success: false,
@@ -160,7 +168,9 @@ app.use((req, res) => {
     });
 });
 
-// Start Server
+// ==========================================
+// 🚀 START SERVER
+// ==========================================
 app.listen(PORT, () => {
     console.log(`✅ Server running on port ${PORT}`);
 });
