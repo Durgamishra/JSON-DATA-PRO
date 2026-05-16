@@ -1,0 +1,14 @@
+name: Deploy Application
+on: [push]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Print secret (for demo purposes)
+        run: echo "Secret is $SECRET_KEY"
+        env:
+          SECRET_KEY: ${{ secrets.MY_SECRET_KEY }}
