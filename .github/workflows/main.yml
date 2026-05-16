@@ -1,14 +1,28 @@
-name: Deploy Application
-on: [push]
+name: Node App
+
+on:
+  push:
+    branches:
+      - main
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
+
+    env:
+      API_KEY: ${{ secrets.API_KEY }}
+
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Print secret (for demo purposes)
-        run: echo "Secret is API_KEY"
-        env:
-          SECRET_KEY: ${{ secrets.API_KEY }}
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Application
+        run: node server.js
