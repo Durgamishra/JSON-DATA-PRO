@@ -72,6 +72,10 @@ document.addEventListener("DOMContentLoaded", () => {
             body: JSON.stringify({
                 // Fixed: Using the updated valid Llama 3.1 free model
                 model: "GPT-3.5-Turbo", 
+                messages: [
+                    { role: "system", content: systemPrompt },
+                    { role: "user", content: prompt }
+                ],
                 temperature: 0.1
             })
         });
