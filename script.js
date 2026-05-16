@@ -6,7 +6,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const copyBtn = document.getElementById('copy-btn');
     const demoTerminal = document.getElementById('demo-output');
     const termLoading = document.querySelector('.term-loading');
-    const API_KEY = process.env.API_KEY;
+    const apiKey = process.env.API_KEY;
+    console.log(apiKey);
     // ==========================================
     // 🚀 MAIN GENERATE BUTTON LOGIC
     // ==========================================
