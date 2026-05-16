@@ -9,26 +9,26 @@ document.addEventListener("DOMContentLoaded", () => {
     const copyBtn = document.getElementById('copy-btn');
 
     // ==========================================
+    // 🌐 API CONFIG (CHANGE ONLY THIS IF NEEDED)
+    // ==========================================
+    const API_URL = "https://JSON-DATA-PRO.onrender.com/api/generate";
+
+    // ==========================================
     // 🚀 GENERATE BUTTON EVENT
     // ==========================================
     generateBtn.addEventListener('click', async () => {
 
         const promptText = promptInput.value.trim();
 
-        // Empty input
         if (!promptText) {
-
             jsonOutput.innerHTML =
                 '<span class="json-comment">// Please enter a prompt.</span>';
-
             return;
         }
 
-        // Loading state
         const originalBtnHTML = generateBtn.innerHTML;
 
         generateBtn.disabled = true;
-
         generateBtn.innerHTML =
             '<i class="ph ph-spinner ph-spin"></i> Generating...';
 
@@ -37,16 +37,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
 
-            // Fetch AI response
             const result = await fetchFromAI(promptText);
 
-            // Generate line numbers
             updateLineNumbers(JSON.stringify(result, null, 2));
 
-            // Syntax highlight
             const formattedHTML = syntaxHighlight(result);
 
-            // Typewriter render
             jsonOutput.innerHTML = '';
 
             typeHTML(formattedHTML, jsonOutput, 5);
@@ -60,11 +56,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 // ERROR:
                 // ${error.message}
                 </span>`;
-
         } finally {
 
             generateBtn.disabled = false;
-
             generateBtn.innerHTML = originalBtnHTML;
         }
     });
@@ -82,14 +76,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 '<i class="ph ph-check text-neon-blue"></i>';
 
             setTimeout(() => {
-
                 copyBtn.innerHTML =
                     '<i class="ph ph-copy"></i>';
-
             }, 2000);
 
         } catch (error) {
-
             console.error("Copy failed:", error);
         }
     });
@@ -99,35 +90,24 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================================
     async function fetchFromAI(prompt) {
 
-        const response = await fetch(
-            "const response = await fetch(
-    "https://JSON-DATA-PRO.onrender.com/api/generate",",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    prompt: prompt
-                })
-            }
-        );
+        const response = await fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ prompt })
+        });
 
-        // Server errors
         if (!response.ok) {
 
             let errorMessage = `Server Error ${response.status}`;
 
             try {
-
                 const errorData = await response.json();
-
                 if (errorData.error) {
                     errorMessage = errorData.error;
                 }
-
             } catch {
-
                 errorMessage = await response.text();
             }
 
@@ -142,15 +122,12 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================================
     function updateLineNumbers(text) {
 
-        const lineNumbers =
-            document.querySelector('.line-numbers');
-
+        const lineNumbers = document.querySelector('.line-numbers');
         const lines = text.split('\n').length;
 
         let numbersHTML = '';
 
         for (let i = 1; i <= lines; i++) {
-
             numbersHTML += i + '<br>';
         }
 
@@ -167,7 +144,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 ? JSON.stringify(jsonObj, null, 2)
                 : jsonObj;
 
-        // Escape HTML
         jsonString = jsonString
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
@@ -179,11 +155,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 let cls = 'json-number';
 
-                // Keys
                 if (/^"/.test(match)) {
 
                     if (/:$/.test(match)) {
-
                         return '<span class="json-key">' +
                             match.slice(0, -1) +
                             '</span>:';
@@ -192,23 +166,15 @@ document.addEventListener("DOMContentLoaded", () => {
                     cls = 'json-string';
                 }
 
-                // Boolean
                 else if (/true|false/.test(match)) {
-
                     cls = 'json-boolean';
                 }
 
-                // Null
                 else if (/null/.test(match)) {
-
                     cls = 'json-null';
                 }
 
-                return '<span class="' +
-                    cls +
-                    '">' +
-                    match +
-                    '</span>';
+                return '<span class="' + cls + '">' + match + '</span>';
             }
         );
     }
@@ -219,37 +185,29 @@ document.addEventListener("DOMContentLoaded", () => {
     function typeHTML(htmlString, element, speed = 5) {
 
         let i = 0;
-
         let currentHTML = '';
 
         function type() {
 
             if (i >= htmlString.length) return;
 
-            // Handle HTML tags
             if (htmlString.charAt(i) === '<') {
 
-                const closingIndex =
-                    htmlString.indexOf('>', i);
+                const closingIndex = htmlString.indexOf('>', i);
 
                 if (closingIndex !== -1) {
 
-                    currentHTML +=
-                        htmlString.substring(i, closingIndex + 1);
-
+                    currentHTML += htmlString.substring(i, closingIndex + 1);
                     i = closingIndex + 1;
 
                     element.innerHTML = currentHTML;
 
                     type();
-
                     return;
                 }
             }
 
-            // Add character
             currentHTML += htmlString.charAt(i);
-
             element.innerHTML = currentHTML;
 
             i++;
