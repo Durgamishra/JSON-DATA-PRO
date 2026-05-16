@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================================
     // 🌐 API CONFIG (CHANGE ONLY THIS IF NEEDED)
     // ==========================================
-    const API_URL = "https://JSON-DATA-PRO.onrender.com/api/generate";
+    const API_URL = "https://json-data-pro.onrender.com/api/generate";
 
     // ==========================================
     // 🚀 GENERATE BUTTON EVENT
