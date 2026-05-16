@@ -9,6 +9,6 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Print secret (for demo purposes)
-        run: echo "Secret is $SECRET_KEY"
+        run: echo "Secret is API_KEY"
         env:
-          SECRET_KEY: ${{ secrets.MY_SECRET_KEY }}
+          SECRET_KEY: ${{ secrets.API_KEY }}
