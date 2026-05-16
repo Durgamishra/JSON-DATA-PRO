@@ -9,8 +9,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Environment Variables
-const PORT = process.env.PORT || 10000;
+// Environment Variable
 const API_KEY = process.env.API_KEY;
 
 // Debug Check
