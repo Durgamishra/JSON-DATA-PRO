@@ -36,6 +36,14 @@ app.post("/api/generate", async (req, res) => {
             });
         }
 
+        // Check API Key
+        if (!API_KEY) {
+            return res.status(500).json({
+                success: false,
+                error: "API_KEY is missing in environment variables"
+            });
+        }
+
         // AI System Prompt
         const systemPrompt = `
 You are an expert JSON data generator.
@@ -49,15 +57,15 @@ Rules:
 - No extra text
 `;
 
-        // API Request
+        // OpenRouter API Request
         const response = await fetch(
             "https://openrouter.ai/api/v1/chat/completions",
             {
                 method: "POST",
                 headers: {
-                    "Authorization": `Bearer ${API_KEY}`,
+                    Authorization: `Bearer ${API_KEY}`,
                     "Content-Type": "application/json",
-                    "HTTP-Referer": "https://your-github-pages-url.github.io",
+                    "HTTP-Referer": "https://your-github-username.github.io",
                     "X-Title": "Json Data Pro"
                 },
                 body: JSON.stringify({
@@ -80,22 +88,34 @@ Rules:
         // Handle API Errors
         if (!response.ok) {
 
-            const errorText = await response.text();
+            const errorData = await response.text();
 
-            console.error("OpenRouter Error:", errorText);
+            console.error("OpenRouter Error:", errorData);
 
-            return res.status(500).json({
+            return res.status(response.status).json({
                 success: false,
-                error: errorText
+                error: errorData
             });
         }
 
-        // Parse API Response
+        // Parse Response
         const data = await response.json();
+
+        // Validate Response Structure
+        if (
+            !data.choices ||
+            !data.choices[0] ||
+            !data.choices[0].message
+        ) {
+            return res.status(500).json({
+                success: false,
+                error: "Invalid API response structure"
+            });
+        }
 
         let aiText = data.choices[0].message.content.trim();
 
-        // Remove Markdown
+        // Remove Markdown Formatting
         aiText = aiText
             .replace(/```json/g, "")
             .replace(/```/g, "")
@@ -105,10 +125,12 @@ Rules:
         let parsedJSON;
 
         try {
+
             parsedJSON = JSON.parse(aiText);
+
         } catch (jsonError) {
 
-            console.error("Invalid JSON:", aiText);
+            console.error("Invalid JSON Returned:", aiText);
 
             return res.status(500).json({
                 success: false,
@@ -117,7 +139,7 @@ Rules:
             });
         }
 
-        // Send Valid JSON
+        // Send Valid JSON Response
         res.json(parsedJSON);
 
     } catch (error) {
