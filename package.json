@@ -1,7 +1,4 @@
 {
   "name": "json-data-pro",
-  "version": "1.0.0",
-  "scripts": {
-    "dev": "vercel dev"
-  }
+  "private": true
 }
