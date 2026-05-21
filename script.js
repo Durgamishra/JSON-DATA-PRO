@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const lineNumbers = document.querySelector(".line-numbers");
 
     // ==========================================
-    // 🌐 VERCEL API ROUTE
+    // 🌐 API ROUTE
     // ==========================================
     const API_URL = "/api/generate";
 
@@ -292,8 +292,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
 
             generateBtn.innerHTML = `
-                <i class="ph ph-stars"></i>
-                Generate JSON
+                Generate JSON <i class="ph ph-arrow-right"></i>
             `;
         }
     }
@@ -312,6 +311,61 @@ document.addEventListener("DOMContentLoaded", () => {
                 // ${message}
             </span>
         `;
+    }
+
+    // ==========================================
+    // 🎬 DEMO TERMINAL ANIMATION
+    // ==========================================
+    const demoTerminal = document.getElementById("demo-output");
+    const termLoading = document.querySelector(".term-loading");
+
+    let demoPlayed = false;
+
+    const demoJson = `{
+  "server": {
+    "port": 8080,
+    "dev_mode": true
+  }
+}`;
+
+    const observer = new IntersectionObserver((entries) => {
+
+        entries.forEach(entry => {
+
+            if (entry.isIntersecting && !demoPlayed) {
+
+                demoPlayed = true;
+
+                setTimeout(() => {
+
+                    termLoading.style.display = "block";
+
+                    setTimeout(async () => {
+
+                        termLoading.style.display = "none";
+
+                        const highlighted =
+                            syntaxHighlight(demoJson);
+
+                        await typeHTML(
+                            highlighted,
+                            demoTerminal,
+                            15
+                        );
+
+                    }, 1200);
+
+                }, 500);
+            }
+        });
+
+    }, { threshold: 0.5 });
+
+    const demoSection =
+        document.querySelector(".demo-terminal");
+
+    if (demoSection) {
+        observer.observe(demoSection);
     }
 
 });
