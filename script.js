@@ -3,90 +3,59 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================================
     // 📦 DOM ELEMENTS
     // ==========================================
-    const generateBtn = document.getElementById('generate-btn');
-    const promptInput = document.getElementById('prompt-input');
-    const jsonOutput = document.getElementById('json-output');
-    const copyBtn = document.getElementById('copy-btn');
+    const generateBtn = document.getElementById("generate-btn");
+    const promptInput = document.getElementById("prompt-input");
+    const jsonOutput = document.getElementById("json-output");
+    const copyBtn = document.getElementById("copy-btn");
+    const lineNumbers = document.querySelector(".line-numbers");
 
     // ==========================================
-    // 🌐 API CONFIG (CHANGE ONLY THIS IF NEEDED)
+    // 🌐 API CONFIG
     // ==========================================
     const API_URL = "https://json-data-pro.onrender.com/api/generate";
 
     // ==========================================
-    // 🚀 GENERATE BUTTON EVENT
+    // 🚀 GENERATE JSON
     // ==========================================
-    generateBtn.addEventListener('click', async () => {
+    generateBtn.addEventListener("click", generateJSON);
 
-        const promptText = promptInput.value.trim();
+    async function generateJSON() {
 
-        if (!promptText) {
-            jsonOutput.innerHTML =
-                '<span class="json-comment">// Please enter a prompt.</span>';
+        const prompt = promptInput.value.trim();
+
+        if (!prompt) {
+            renderError("Please enter a prompt.");
             return;
         }
 
-        const originalBtnHTML = generateBtn.innerHTML;
-
-        generateBtn.disabled = true;
-        generateBtn.innerHTML =
-            '<i class="ph ph-spinner ph-spin"></i> Generating...';
-
-        jsonOutput.innerHTML =
-            '<span class="json-comment">// Generating JSON...</span>';
+        setLoadingState(true);
 
         try {
 
-            const result = await fetchFromAI(promptText);
+            const result = await fetchFromAI(prompt);
 
-            updateLineNumbers(JSON.stringify(result, null, 2));
+            const jsonString = JSON.stringify(result, null, 2);
 
-            const formattedHTML = syntaxHighlight(result);
+            updateLineNumbers(jsonString);
 
-            jsonOutput.innerHTML = '';
+            const highlightedHTML = syntaxHighlight(jsonString);
 
-            typeHTML(formattedHTML, jsonOutput, 5);
+            await typeHTML(highlightedHTML, jsonOutput);
 
         } catch (error) {
 
-            console.error(error);
+            console.error("AI Fetch Error:", error);
 
-            jsonOutput.innerHTML =
-                `<span class="json-comment" style="color:#ff5555;">
-                // ERROR:
-                // ${error.message}
-                </span>`;
+            renderError(error.message || "Something went wrong.");
+
         } finally {
 
-            generateBtn.disabled = false;
-            generateBtn.innerHTML = originalBtnHTML;
+            setLoadingState(false);
         }
-    });
+    }
 
     // ==========================================
-    // 📋 COPY BUTTON
-    // ==========================================
-    copyBtn.addEventListener('click', async () => {
-
-        try {
-
-            await navigator.clipboard.writeText(jsonOutput.innerText);
-
-            copyBtn.innerHTML =
-                '<i class="ph ph-check text-neon-blue"></i>';
-
-            setTimeout(() => {
-                copyBtn.innerHTML =
-                    '<i class="ph ph-copy"></i>';
-            }, 2000);
-
-        } catch (error) {
-            console.error("Copy failed:", error);
-        }
-    });
-
-    // ==========================================
-    // 🧠 FETCH AI FROM BACKEND
+    // 📡 FETCH FROM BACKEND
     // ==========================================
     async function fetchFromAI(prompt) {
 
@@ -98,83 +67,68 @@ document.addEventListener("DOMContentLoaded", () => {
             body: JSON.stringify({ prompt })
         });
 
-        if (!response.ok) {
+        let data;
 
-            let errorMessage = `Server Error ${response.status}`;
-
-            try {
-                const errorData = await response.json();
-                if (errorData.error) {
-                    errorMessage = errorData.error;
-                }
-            } catch {
-                errorMessage = await response.text();
-            }
-
-            throw new Error(errorMessage);
+        try {
+            data = await response.json();
+        } catch {
+            throw new Error("Invalid JSON response from server.");
         }
 
-        return await response.json();
+        if (!response.ok) {
+            throw new Error(data.error || `Server Error ${response.status}`);
+        }
+
+        return data;
     }
 
     // ==========================================
-    // 🔢 UPDATE LINE NUMBERS
+    // 🔢 LINE NUMBERS
     // ==========================================
     function updateLineNumbers(text) {
 
-        const lineNumbers = document.querySelector('.line-numbers');
-        const lines = text.split('\n').length;
+        const lines = text.split("\n").length;
 
-        let numbersHTML = '';
-
-        for (let i = 1; i <= lines; i++) {
-            numbersHTML += i + '<br>';
-        }
-
-        lineNumbers.innerHTML = numbersHTML;
+        lineNumbers.innerHTML = Array.from(
+            { length: lines },
+            (_, i) => i + 1
+        ).join("<br>");
     }
 
     // ==========================================
-    // 🎨 SYNTAX HIGHLIGHTER
+    // 🎨 JSON SYNTAX HIGHLIGHTER
     // ==========================================
-    function syntaxHighlight(jsonObj) {
+    function syntaxHighlight(jsonString) {
 
-        let jsonString =
-            typeof jsonObj !== 'string'
-                ? JSON.stringify(jsonObj, null, 2)
-                : jsonObj;
+        const escaped = jsonString
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;");
 
-        jsonString = jsonString
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;');
-
-        return jsonString.replace(
+        return escaped.replace(
             /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(\.\d+)?([eE][+\-]?\d+)?)/g,
-            function (match) {
+            (match) => {
 
-                let cls = 'json-number';
+                let cls = "json-number";
 
                 if (/^"/.test(match)) {
 
                     if (/:$/.test(match)) {
-                        return '<span class="json-key">' +
-                            match.slice(0, -1) +
-                            '</span>:';
+                        return `<span class="json-key">${match.slice(0, -1)}</span>:`;
                     }
 
-                    cls = 'json-string';
+                    cls = "json-string";
                 }
 
                 else if (/true|false/.test(match)) {
-                    cls = 'json-boolean';
+                    cls = "json-boolean";
                 }
 
                 else if (/null/.test(match)) {
-                    cls = 'json-null';
+                    cls = "json-null";
                 }
 
-                return '<span class="' + cls + '">' + match + '</span>';
+                return `<span class="${cls}">${match}</span>`;
             }
         );
     }
@@ -182,40 +136,111 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================================
     // ⌨️ TYPEWRITER EFFECT
     // ==========================================
-    function typeHTML(htmlString, element, speed = 5) {
+    function typeHTML(html, element, speed = 3) {
 
-        let i = 0;
-        let currentHTML = '';
+        return new Promise((resolve) => {
 
-        function type() {
+            let i = 0;
+            let output = "";
 
-            if (i >= htmlString.length) return;
+            function type() {
 
-            if (htmlString.charAt(i) === '<') {
-
-                const closingIndex = htmlString.indexOf('>', i);
-
-                if (closingIndex !== -1) {
-
-                    currentHTML += htmlString.substring(i, closingIndex + 1);
-                    i = closingIndex + 1;
-
-                    element.innerHTML = currentHTML;
-
-                    type();
+                if (i >= html.length) {
+                    resolve();
                     return;
                 }
+
+                if (html[i] === "<") {
+
+                    const closeIndex = html.indexOf(">", i);
+
+                    if (closeIndex !== -1) {
+
+                        output += html.slice(i, closeIndex + 1);
+                        i = closeIndex + 1;
+
+                        element.innerHTML = output;
+
+                        requestAnimationFrame(type);
+
+                        return;
+                    }
+                }
+
+                output += html[i];
+                i++;
+
+                element.innerHTML = output;
+
+                setTimeout(() => {
+                    requestAnimationFrame(type);
+                }, speed);
             }
 
-            currentHTML += htmlString.charAt(i);
-            element.innerHTML = currentHTML;
+            type();
+        });
+    }
 
-            i++;
+    // ==========================================
+    // 📋 COPY JSON
+    // ==========================================
+    copyBtn.addEventListener("click", copyJSON);
 
-            setTimeout(type, speed);
+    async function copyJSON() {
+
+        try {
+
+            await navigator.clipboard.writeText(jsonOutput.innerText);
+
+            copyBtn.innerHTML =
+                '<i class="ph ph-check text-neon-blue"></i>';
+
+            setTimeout(() => {
+                copyBtn.innerHTML =
+                    '<i class="ph ph-copy"></i>';
+            }, 1500);
+
+        } catch (error) {
+
+            console.error("Clipboard Error:", error);
+
+            renderError("Failed to copy JSON.");
         }
+    }
 
-        type();
+    // ==========================================
+    // ⚡ LOADING UI
+    // ==========================================
+    function setLoadingState(isLoading) {
+
+        generateBtn.disabled = isLoading;
+
+        if (isLoading) {
+
+            generateBtn.innerHTML =
+                '<i class="ph ph-spinner ph-spin"></i> Generating...';
+
+            jsonOutput.innerHTML =
+                '<span class="json-comment">// Generating JSON...</span>';
+
+        } else {
+
+            generateBtn.innerHTML =
+                '<i class="ph ph-stars"></i> Generate JSON';
+        }
+    }
+
+    // ==========================================
+    // ❌ ERROR RENDER
+    // ==========================================
+    function renderError(message) {
+
+        jsonOutput.innerHTML = `
+            <span class="json-comment" style="color:#ff5555;">
+            // ERROR:
+            // ${message}
+            </span>
+        `;
     }
 
 });
