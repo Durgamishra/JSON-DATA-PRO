@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================================
     // 🌐 API CONFIG
     // ==========================================
-    const API_URL = "https://json-data-pro.onrender.com/api/generate";
+    const API_URL = "https://json-data-pro.openrouter.com/api/generate";
 
     // ==========================================
     // 🚀 GENERATE JSON
