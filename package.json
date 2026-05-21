@@ -1,18 +1,8 @@
 {
-  "name": "ai",
+  "name": "json-data-pro",
   "version": "1.0.0",
-  "description": "AI JSON Generator Backend",
-  "main": "server.js",
+  "type": "module",
   "scripts": {
-    "start": "node server.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2"
+    "dev": "vercel dev"
   }
 }
