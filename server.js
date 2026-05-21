@@ -6,30 +6,49 @@ const cors = require("cors");
 const app = express();
 
 // ==========================================
-// ⚙️ MIDDLEWARE (FIXED FOR GITHUB + MOBILE)
+// ⚙️ CONFIG
 // ==========================================
+const PORT = process.env.PORT || 10000;
+const API_KEY = process.env.API_KEY;
+
+// ==========================================
+// 🚨 STARTUP VALIDATION
+// ==========================================
+if (!API_KEY) {
+    console.error("❌ API_KEY missing in environment variables");
+    process.exit(1);
+}
+
+// ==========================================
+// ⚡ MIDDLEWARE
+// ==========================================
+app.disable("x-powered-by");
+
 app.use(cors({
     origin: "*",
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"]
 }));
 
-app.use(express.json());
-
-// ==========================================
-// 🔐 ENV VARIABLES
-// ==========================================
-const PORT = process.env.PORT || 10000;
-const API_KEY = process.env.API_KEY;
-
-// Debug
-console.log("API KEY LOADED:", API_KEY ? "YES" : "NO");
+app.use(express.json({
+    limit: "1mb"
+}));
 
 // ==========================================
 // 🏠 ROOT ROUTE
 // ==========================================
-app.get("/", (req, res) => {
-    res.send("Backend Running Successfully 🚀");
+app.get("/", (_, res) => {
+    res.status(200).send("🚀 Backend Running Successfully");
+});
+
+// ==========================================
+// ❤️ HEALTH CHECK
+// ==========================================
+app.get("/health", (_, res) => {
+    res.status(200).json({
+        success: true,
+        status: "OK"
+    });
 });
 
 // ==========================================
@@ -39,9 +58,11 @@ app.post("/api/generate", async (req, res) => {
 
     try {
 
-        const { prompt } = req.body;
+        const prompt = req.body?.prompt?.trim();
 
-        // Validate prompt
+        // ==========================================
+        // VALIDATION
+        // ==========================================
         if (!prompt) {
             return res.status(400).json({
                 success: false,
@@ -49,32 +70,44 @@ app.post("/api/generate", async (req, res) => {
             });
         }
 
-        // Validate API key
-        if (!API_KEY) {
-            return res.status(500).json({
+        if (prompt.length > 3000) {
+            return res.status(400).json({
                 success: false,
-                error: "API_KEY missing in Render environment variables"
+                error: "Prompt too large"
             });
         }
 
-        // System prompt
+        // ==========================================
+        // SYSTEM PROMPT
+        // ==========================================
         const systemPrompt = `
-You are an expert JSON data generator.
-
-Convert the user's request into STRICT valid JSON only.
+You are an expert JSON generator.
 
 Rules:
-- ONLY JSON output
-- NO markdown
-- NO explanation
-- NO extra text
+- Return ONLY valid JSON
+- No markdown
+- No explanations
+- No comments
+- Output must be parseable
 `;
 
-        // OpenRouter request (FIXED HEADERS + SAFETY)
+        // ==========================================
+        // REQUEST TIMEOUT
+        // ==========================================
+        const controller = new AbortController();
+
+        const timeout = setTimeout(() => {
+            controller.abort();
+        }, 25000);
+
+        // ==========================================
+        // OPENROUTER API CALL
+        // ==========================================
         const response = await fetch(
             "https://openrouter.ai/api/v1/chat/completions",
             {
                 method: "POST",
+                signal: controller.signal,
                 headers: {
                     Authorization: `Bearer ${API_KEY}`,
                     "Content-Type": "application/json",
@@ -93,67 +126,91 @@ Rules:
                             content: prompt
                         }
                     ],
-                    temperature: 0.1
+                    temperature: 0,
+                    max_tokens: 1000
                 })
             }
         );
 
-        // API error handling
+        clearTimeout(timeout);
+
+        // ==========================================
+        // HANDLE API ERRORS
+        // ==========================================
         if (!response.ok) {
 
             const errorText = await response.text();
 
-            console.error("OpenRouter Error:", errorText);
+            console.error("❌ OpenRouter Error:", errorText);
 
             return res.status(response.status).json({
                 success: false,
-                error: errorText
+                error: "AI API request failed"
             });
         }
 
+        // ==========================================
+        // PARSE RESPONSE
+        // ==========================================
         const data = await response.json();
 
-        // Safety check
-        if (!data?.choices?.[0]?.message?.content) {
+        const aiContent =
+            data?.choices?.[0]?.message?.content?.trim();
+
+        if (!aiContent) {
             return res.status(500).json({
                 success: false,
-                error: "Invalid AI response structure"
+                error: "Empty AI response"
             });
         }
 
-        let aiText = data.choices[0].message.content.trim();
-
-        // Clean markdown
-        aiText = aiText
-            .replace(/```json/g, "")
+        // ==========================================
+        // CLEAN MARKDOWN
+        // ==========================================
+        const cleanedText = aiContent
+            .replace(/```json/gi, "")
             .replace(/```/g, "")
             .trim();
 
-        // Parse JSON safely
+        // ==========================================
+        // SAFE JSON PARSE
+        // ==========================================
         let parsedJSON;
 
         try {
-            parsedJSON = JSON.parse(aiText);
-        } catch (err) {
 
-            console.error("JSON Parse Error:", aiText);
+            parsedJSON = JSON.parse(cleanedText);
+
+        } catch {
+
+            console.error("❌ Invalid JSON:", cleanedText);
 
             return res.status(500).json({
                 success: false,
-                error: "AI returned invalid JSON",
-                raw: aiText
+                error: "AI returned invalid JSON"
             });
         }
 
-        return res.json(parsedJSON);
+        // ==========================================
+        // SUCCESS RESPONSE
+        // ==========================================
+        return res.status(200).json(parsedJSON);
 
     } catch (error) {
 
-        console.error("SERVER ERROR:", error);
+        console.error("❌ SERVER ERROR:", error);
+
+        // Timeout
+        if (error.name === "AbortError") {
+            return res.status(408).json({
+                success: false,
+                error: "Request timeout"
+            });
+        }
 
         return res.status(500).json({
             success: false,
-            error: error.message
+            error: "Internal Server Error"
         });
     }
 });
@@ -161,7 +218,7 @@ Rules:
 // ==========================================
 // ❌ 404 HANDLER
 // ==========================================
-app.use((req, res) => {
+app.use((_, res) => {
     res.status(404).json({
         success: false,
         error: "Route Not Found"
