@@ -415,6 +415,7 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.02em; }
     line-height: 1.6;
     min-width: 0;
 }
+
 /* Syntax Highlighting */
 .language-json { color: var(--text-primary); }
 .json-key     { color: var(--cyan); }
