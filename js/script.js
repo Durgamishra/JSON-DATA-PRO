@@ -3,11 +3,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================================
     // 📦 DOM ELEMENTS
     // ==========================================
-    const generateBtn = document.getElementById("generate-btn");
-    const promptInput = document.getElementById("prompt-input");
-    const jsonOutput = document.getElementById("json-output");
-    const copyBtn = document.getElementById("copy-btn");
-    const lineNumbers = document.querySelector(".line-numbers");
+    const generateBtn  = document.getElementById("generate-btn");
+    const promptInput  = document.getElementById("prompt-input");
+    const jsonOutput   = document.getElementById("json-output");
+    const copyBtn      = document.getElementById("copy-btn");
+    const lineNumbers  = document.getElementById("line-numbers");
 
     // ==========================================
     // 🌐 API ROUTE
@@ -19,9 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================================
     generateBtn.addEventListener("click", generateJSON);
 
-    // ENTER KEY SUPPORT
     promptInput.addEventListener("keydown", (e) => {
-
         if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
             generateJSON();
@@ -35,42 +33,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const prompt = promptInput.value.trim();
 
-        // VALIDATION
         if (!prompt) {
             renderError("Please enter a prompt.");
             return;
         }
 
-        // LOADING UI
         setLoadingState(true);
 
         try {
-
-            // FETCH AI RESPONSE
-            const result = await fetchFromAI(prompt);
-
-            // FORMAT JSON
+            const result     = await fetchFromAI(prompt);
             const jsonString = JSON.stringify(result, null, 2);
 
-            // UPDATE LINE NUMBERS
-            updateLineNumbers(jsonString);
+            // FIX: set total line count upfront so numbers appear instantly
+            updateLineNumbers(jsonString.split("\n").length);
 
-            // SYNTAX HIGHLIGHT
             const highlightedHTML = syntaxHighlight(jsonString);
 
-            // TYPE EFFECT
-            await typeHTML(highlightedHTML, jsonOutput);
+            // FIX: pass jsonString so typewriter can track newlines live
+            await typeHTML(highlightedHTML, jsonOutput, jsonString, 8);
 
         } catch (error) {
-
             console.error("Frontend Error:", error);
-
-            renderError(
-                error.message || "Something went wrong."
-            );
-
+            renderError(error.message || "Something went wrong.");
         } finally {
-
             setLoadingState(false);
         }
     }
@@ -81,40 +66,26 @@ document.addEventListener("DOMContentLoaded", () => {
     async function fetchFromAI(prompt) {
 
         const controller = new AbortController();
-
-        const timeout = setTimeout(() => {
-            controller.abort();
-        }, 30000);
+        const timeout    = setTimeout(() => controller.abort(), 30000);
 
         const response = await fetch(API_URL, {
             method: "POST",
             signal: controller.signal,
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ prompt })
         });
 
         clearTimeout(timeout);
 
         let data;
-
         try {
-
             data = await response.json();
-
         } catch {
-
-            throw new Error(
-                "Invalid response from server."
-            );
+            throw new Error("Invalid response from server.");
         }
 
         if (!response.ok) {
-
-            throw new Error(
-                data.error || `Server Error ${response.status}`
-            );
+            throw new Error(data.error || `Server Error ${response.status}`);
         }
 
         return data;
@@ -122,19 +93,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ==========================================
     // 🔢 UPDATE LINE NUMBERS
+    // FIX: accepts a number directly (no more splitting HTML strings)
     // ==========================================
-    function updateLineNumbers(text) {
-
-        const lines = text.split("\n").length;
-
+    function updateLineNumbers(count) {
         lineNumbers.innerHTML = Array.from(
-            { length: lines },
+            { length: count },
             (_, i) => i + 1
         ).join("<br>");
     }
 
     // ==========================================
     // 🎨 JSON SYNTAX HIGHLIGHTER
+    // FIX: removed indented template literals that injected
+    //      stray whitespace/newlines into <pre> output
     // ==========================================
     function syntaxHighlight(jsonString) {
 
@@ -147,89 +118,92 @@ document.addEventListener("DOMContentLoaded", () => {
             /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(\.\d+)?([eE][+\-]?\d+)?)/g,
             (match) => {
 
-                let cls = "json-number";
-
                 if (/^"/.test(match)) {
-
+                    // FIX: was multi-line template literal — now single line, no whitespace injection
                     if (/:$/.test(match)) {
-
-                        return `
-                        <span class="json-key">
-                            ${match.slice(0, -1)}
-                        </span>:
-                        `;
+                        return `<span class="json-key">${match.slice(0, -1)}</span>:`;
                     }
-
-                    cls = "json-string";
+                    return `<span class="json-string">${match}</span>`;
                 }
 
-                else if (/true|false/.test(match)) {
-                    cls = "json-boolean";
+                if (/true|false/.test(match)) {
+                    return `<span class="json-boolean">${match}</span>`;
                 }
 
-                else if (/null/.test(match)) {
-                    cls = "json-null";
+                if (/null/.test(match)) {
+                    return `<span class="json-null">${match}</span>`;
                 }
 
-                return `
-                <span class="${cls}">
-                    ${match}
-                </span>
-                `;
+                return `<span class="json-number">${match}</span>`;
             }
         );
     }
 
     // ==========================================
     // ⌨️ TYPEWRITER EFFECT
+    // FIX: live line-number updates on each newline char
+    // FIX: speed tuned — HTML tags skipped instantly,
+    //      visible chars typed at `speed` ms each
     // ==========================================
-    function typeHTML(html, element, speed = 2) {
+    function typeHTML(html, element, plainText, speed = 8) {
 
         return new Promise((resolve) => {
 
-            let i = 0;
-            let output = "";
+            let i          = 0;
+            let output     = "";
+            let lineCount  = 1;
 
             element.innerHTML = "";
+            updateLineNumbers(lineCount);
+
+            // Pre-count total lines for reference
+            const totalLines = (plainText.match(/\n/g) || []).length + 1;
 
             function type() {
 
                 if (i >= html.length) {
+                    // Ensure final count is exact
+                    updateLineNumbers(totalLines);
                     resolve();
                     return;
                 }
 
-                // HANDLE HTML TAGS
+                // Skip HTML tags instantly (no delay)
                 if (html[i] === "<") {
-
-                    const closeIndex = html.indexOf(">", i);
-
-                    if (closeIndex !== -1) {
-
-                        output += html.slice(
-                            i,
-                            closeIndex + 1
-                        );
-
-                        i = closeIndex + 1;
-
+                    const closeIdx = html.indexOf(">", i);
+                    if (closeIdx !== -1) {
+                        output += html.slice(i, closeIdx + 1);
+                        i       = closeIdx + 1;
                         element.innerHTML = output;
-
                         requestAnimationFrame(type);
-
                         return;
                     }
                 }
 
-                output += html[i];
+                // Skip HTML entities as single units (no delay)
+                if (html[i] === "&") {
+                    const semiIdx = html.indexOf(";", i);
+                    if (semiIdx !== -1 && semiIdx - i <= 6) {
+                        output += html.slice(i, semiIdx + 1);
+                        i       = semiIdx + 1;
+                        element.innerHTML = output;
+                        setTimeout(type, speed);
+                        return;
+                    }
+                }
 
+                const char = html[i];
+                output    += char;
                 element.innerHTML = output;
 
-                i++;
+                // FIX: increment line count live when a newline is typed
+                if (char === "\n") {
+                    lineCount++;
+                    updateLineNumbers(lineCount);
+                }
 
-                setTimeout(() => {
-                    requestAnimationFrame(type);
-                }, speed);
+                i++;
+                setTimeout(type, speed);
             }
 
             type();
@@ -242,27 +216,14 @@ document.addEventListener("DOMContentLoaded", () => {
     copyBtn.addEventListener("click", copyJSON);
 
     async function copyJSON() {
-
         try {
-
-            await navigator.clipboard.writeText(
-                jsonOutput.innerText
-            );
-
-            copyBtn.innerHTML =
-                '<i class="ph ph-check"></i>';
-
+            await navigator.clipboard.writeText(jsonOutput.innerText);
+            copyBtn.innerHTML = '<i class="ph ph-check"></i>';
             setTimeout(() => {
-
-                copyBtn.innerHTML =
-                    '<i class="ph ph-copy"></i>';
-
+                copyBtn.innerHTML = '<i class="ph ph-copy"></i>';
             }, 1500);
-
         } catch (error) {
-
             console.error("Copy Error:", error);
-
             renderError("Failed to copy JSON.");
         }
     }
@@ -275,25 +236,11 @@ document.addEventListener("DOMContentLoaded", () => {
         generateBtn.disabled = isLoading;
 
         if (isLoading) {
-
-            generateBtn.innerHTML = `
-                <i class="ph ph-spinner ph-spin"></i>
-                Generating...
-            `;
-
-            jsonOutput.innerHTML = `
-                <span class="json-comment">
-                    // Generating JSON...
-                </span>
-            `;
-
-            updateLineNumbers("{\n}");
-
+            generateBtn.innerHTML = `<i class="ph ph-spinner ph-spin"></i> Generating...`;
+            jsonOutput.innerHTML  = `<span class="json-comment">// Generating JSON...</span>`;
+            updateLineNumbers(1);
         } else {
-
-            generateBtn.innerHTML = `
-                Generate JSON <i class="ph ph-arrow-right"></i>
-            `;
+            generateBtn.innerHTML = `Generate JSON <i class="ph ph-arrow-right"></i>`;
         }
     }
 
@@ -301,23 +248,16 @@ document.addEventListener("DOMContentLoaded", () => {
     // ❌ ERROR UI
     // ==========================================
     function renderError(message) {
-
-        jsonOutput.innerHTML = `
-            <span
-                class="json-comment"
-                style="color:#ff5555;"
-            >
-                // ERROR:
-                // ${message}
-            </span>
-        `;
+        jsonOutput.innerHTML = `<span class="json-comment" style="color:#ff5555;">// ERROR:\n// ${message}</span>`;
+        updateLineNumbers(2);
     }
 
     // ==========================================
     // 🎬 DEMO TERMINAL ANIMATION
+    // FIX: speed reduced from 15ms → 6ms for snappier feel
     // ==========================================
     const demoTerminal = document.getElementById("demo-output");
-    const termLoading = document.querySelector(".term-loading");
+    const termLoading  = document.querySelector(".term-loading");
 
     let demoPlayed = false;
 
@@ -329,43 +269,26 @@ document.addEventListener("DOMContentLoaded", () => {
 }`;
 
     const observer = new IntersectionObserver((entries) => {
-
         entries.forEach(entry => {
-
             if (entry.isIntersecting && !demoPlayed) {
-
                 demoPlayed = true;
 
                 setTimeout(() => {
-
                     termLoading.style.display = "block";
 
                     setTimeout(async () => {
-
                         termLoading.style.display = "none";
-
-                        const highlighted =
-                            syntaxHighlight(demoJson);
-
-                        await typeHTML(
-                            highlighted,
-                            demoTerminal,
-                            15
-                        );
-
+                        const highlighted = syntaxHighlight(demoJson);
+                        // FIX: speed 6ms — fast enough to feel snappy, slow enough to read
+                        await typeHTML(highlighted, demoTerminal, demoJson, 6);
                     }, 1200);
 
                 }, 500);
             }
         });
-
     }, { threshold: 0.5 });
 
-    const demoSection =
-        document.querySelector(".demo-terminal");
-
-    if (demoSection) {
-        observer.observe(demoSection);
-    }
+    const demoSection = document.querySelector(".demo-terminal");
+    if (demoSection) observer.observe(demoSection);
 
 });
