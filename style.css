@@ -281,7 +281,6 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.02em; }
 }
 
 /* ================= Code Window / JSON Preview ================= */
-/* ================= Code Window / JSON Preview ================= */
 
 .hero-preview {
     perspective: 1000px;
@@ -293,6 +292,7 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.02em; }
     transform: rotateY(-5deg) rotateX(5deg);
     transition: transform 0.5s ease;
     box-shadow: -20px 20px 40px rgba(0, 0, 0, 0.5);
+    /* FIX: clip contents properly without cutting off output */
     overflow: hidden;
     width: 100%;
 }
@@ -302,7 +302,6 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.02em; }
 }
 
 /* Window Header */
-
 .window-header {
     display: flex;
     align-items: center;
@@ -310,6 +309,9 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.02em; }
     padding: 1rem;
     border-bottom: 1px solid var(--border-glass);
     background: rgba(255, 255, 255, 0.02);
+    /* FIX: keep header always visible above scrolling body */
+    position: relative;
+    z-index: 2;
 }
 
 .window-dots {
@@ -323,17 +325,9 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.02em; }
     border-radius: 50%;
 }
 
-.dot.red {
-    background: #ff5f56;
-}
-
-.dot.yellow {
-    background: #ffbd2e;
-}
-
-.dot.green {
-    background: #27c93f;
-}
+.dot.red    { background: #ff5f56; }
+.dot.yellow { background: #ffbd2e; }
+.dot.green  { background: #27c93f; }
 
 .window-title {
     color: var(--text-secondary);
@@ -342,7 +336,6 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.02em; }
 }
 
 /* Copy Button */
-
 .copy-btn {
     background: transparent;
     border: none;
@@ -352,81 +345,83 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.02em; }
     transition: color 0.3s ease;
 }
 
-.copy-btn:hover {
-    color: var(--text-primary);
-}
+.copy-btn:hover { color: var(--text-primary); }
 
-/* JSON Window Body */
-
+/* ── FIX: Output window body ── */
 .window-body {
     display: flex;
     align-items: flex-start;
-    padding: 1.5rem 1rem;
+    padding: 1.25rem 1rem;
     font-family: var(--font-mono);
-    font-size: 0.9rem;
+    font-size: 0.875rem;
     line-height: 1.6;
+
+    /* FIX 1: was overflow-y: hidden — now scrolls vertically for long JSON */
     overflow-x: auto;
-    overflow-y: hidden;
-    width: 100%;
-    min-height: 350px;
+    overflow-y: auto;
+
+    /* FIX 2: bounded height so the window doesn't grow forever */
+    min-height: 260px;
+    max-height: 420px;
+
+    /* FIX 3: thin custom scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
 }
 
-/* Line Numbers */
+.window-body::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+.window-body::-webkit-scrollbar-track { background: transparent; }
+.window-body::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 3px;
+}
+.window-body::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
 
+/* ── FIX: Line numbers — sticky so they don't scroll away horizontally ── */
 .line-numbers {
-    min-width: 45px;
-    padding-right: 16px;
-    margin-right: 16px;
+    /* FIX: sticky left so numbers stay visible on horizontal scroll */
+    position: sticky;
+    left: 0;
+    /* match window bg so numbers sit cleanly over content */
+    background: #09090b;
+    z-index: 1;
+
+    min-width: 38px;
+    padding-right: 14px;
+    margin-right: 14px;
     text-align: right;
-    color: #555;
+    color: #444;
     user-select: none;
-    border-right: 1px solid rgba(255,255,255,0.08);
+    border-right: 1px solid rgba(255, 255, 255, 0.07);
     flex-shrink: 0;
     line-height: 1.6;
+
+    /* smooth line count updates */
+    transition: color 0.2s;
 }
 
 /* JSON Output */
-
 #json-output {
     flex: 1;
-    white-space: pre-wrap;
-    overflow-wrap: break-word;
-    word-break: break-word;
+    white-space: pre;          /* FIX: keep strict indentation intact */
+    overflow-wrap: normal;
+    word-break: normal;
     color: var(--text-primary);
-    width: 100%;
     line-height: 1.6;
+    min-width: 0;
 }
-
 /* Syntax Highlighting */
-
-.language-json {
-    color: var(--text-primary);
-}
-
-.json-key {
-    color: var(--cyan);
-}
-
-.json-string {
-    color: #a5d6ff;
-}
-
-.json-number {
-    color: #d2a8ff;
-}
-
-.json-boolean {
-    color: #79c0ff;
-}
-
-.json-null {
-    color: #6e7681;
-}
-
-.json-comment {
-    color: #6e7681;
-    font-style: italic;
-} 
+.language-json { color: var(--text-primary); }
+.json-key     { color: var(--cyan); }
+.json-string  { color: #a5d6ff; }
+.json-number  { color: #d2a8ff; }
+.json-boolean { color: #79c0ff; }
+.json-null    { color: #6e7681; }
 .json-comment { color: #6e7681; font-style: italic; }
 
 /* ================= Features Section ================= */
@@ -524,7 +519,7 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.02em; }
 .term-input { color: #fff; margin-bottom: 1rem; }
 .prompt-arrow { color: var(--neon-blue); font-weight: bold; margin-right: 8px; }
 .term-loading { color: var(--neon-purple); margin-bottom: 1rem; animation: pulse 1s infinite; }
-.term-output { color: #a5d6ff; line-height: 1.5; white-space: pre-wrap; }
+.term-output { color: #a5d6ff; line-height: 1.6; white-space: pre-wrap; }
 
 /* ================= Footer ================= */
 footer {
