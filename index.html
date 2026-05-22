@@ -33,8 +33,32 @@
                 <li><a href="#why">Why Us</a></li>
             </ul>
             <div class="nav-actions">
-              <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="btn-ghost"><i class="ph ph-github-logo"></i> GitHub</a>
-              <a href="#" class="btn-primary">Get Started</a>
+                <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="btn-ghost">
+                    <i class="ph ph-github-logo"></i>
+                    <span>GitHub</span>
+                </a>
+                <a href="#" class="btn-primary">Get Started</a>
+            </div>
+            <!-- Hamburger: visible on mobile only -->
+            <button class="hamburger" id="hamburger-btn" aria-label="Toggle menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+
+        <!-- Mobile drawer (slides down under navbar) -->
+        <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+            <ul class="mobile-nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#demo">Demo</a></li>
+                <li><a href="#why">Why Us</a></li>
+            </ul>
+            <div class="mobile-nav-actions">
+                <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="btn-ghost">
+                    <i class="ph ph-github-logo"></i> GitHub
+                </a>
+                <a href="#" class="btn-primary">Get Started</a>
             </div>
         </div>
     </nav>
