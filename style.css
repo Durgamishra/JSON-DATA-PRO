@@ -1,587 +1,294 @@
-/* ================= Variables & Base Setup ================= */
-:root {
-    --bg-dark: #050505;
-    --bg-card: rgba(18, 18, 24, 0.4);
-    --border-glass: rgba(255, 255, 255, 0.08);
-    --border-glow: rgba(0, 240, 255, 0.3);
-    
-    --neon-blue: #00f0ff;
-    --neon-purple: #b026ff;
-    --cyan: #00e5ff;
-    
-    --text-primary: #ffffff;
-    --text-secondary: #9ca3af;
-    
-    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-    --font-mono: 'Fira Code', monospace;
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-html {
-    scroll-behavior: smooth;
-}
-
-body {
-    background-color: var(--bg-dark);
-    color: var(--text-primary);
-    font-family: var(--font-sans);
-    line-height: 1.6;
-    overflow-x: hidden;
-    position: relative;
-}
-
-/* ================= Background Effects ================= */
-.bg-grid {
-    position: fixed;
-    top: 0; left: 0; width: 100vw; height: 100vh;
-    background-image: 
-        linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    z-index: -2;
-    mask-image: radial-gradient(circle at center, black 20%, transparent 80%);
-    -webkit-mask-image: radial-gradient(circle at center, black 20%, transparent 80%);
-}
-
-.glow-orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(100px);
-    opacity: 0.4;
-    z-index: -1;
-    animation: float 10s infinite alternate ease-in-out;
-}
-
-.orb-1 {
-    top: -10%; left: 10%; width: 400px; height: 400px;
-    background: radial-gradient(circle, var(--neon-purple), transparent 70%);
-}
-
-.orb-2 {
-    top: 30%; right: -5%; width: 500px; height: 500px;
-    background: radial-gradient(circle, var(--neon-blue), transparent 70%);
-    animation-delay: -5s;
-}
-
-.orb-3 {
-    bottom: -10%; left: 30%; width: 600px; height: 600px;
-    background: radial-gradient(circle, var(--cyan), transparent 70%);
-    opacity: 0.2;
-}
-
-@keyframes float {
-    0% { transform: translateY(0) scale(1); }
-    100% { transform: translateY(30px) scale(1.1); }
-}
-
-/* ================= Typography & Utilities ================= */
-h1, h2, h3 { line-height: 1.2; letter-spacing: -0.02em; }
-
-.text-gradient {
-    background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.text-neon-purple { color: var(--neon-purple); }
-.text-neon-blue { color: var(--neon-blue); }
-
-.glass-panel {
-    background: var(--bg-card);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid var(--border-glass);
-    border-radius: 16px;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-}
-
-/* ================= Navbar ================= */
-.navbar {
-    position: fixed;
-    top: 0; left: 0; width: 100%;
-    z-index: 100;
-    background: rgba(5, 5, 5, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border-glass);
-}
-
-.nav-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 1rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 1.25rem;
-    font-weight: 500;
-}
-
-.logo i { font-size: 1.5rem; color: var(--neon-blue); }
-
-.nav-links {
-    display: flex;
-    list-style: none;
-    gap: 2rem;
-}
-
-.nav-links a {
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-size: 0.9rem;
-    transition: color 0.3s;
-}
-
-.nav-links a:hover { color: var(--text-primary); }
-
-.nav-actions { display: flex; gap: 1rem; align-items: center; }
-
-.btn-ghost {
-    color: var(--text-primary);
-    text-decoration: none;
-    font-size: 0.9rem;
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-}
-
-.btn-primary {
-    background: var(--text-primary);
-    color: var(--bg-dark);
-    padding: 0.5rem 1.2rem;
-    border-radius: 8px;
-    text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 600;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
-}
-
-/* ================= Hero Section ================= */
-.hero {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    padding: 8rem 2rem 4rem;
-}
-
-.hero-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    align-items: center;
-}
-
-.badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.4rem 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--border-glass);
-    border-radius: 50px;
-    font-size: 0.85rem;
-    margin-bottom: 1.5rem;
-}
-
-.badge-dot {
-    width: 8px; height: 8px;
-    background: var(--neon-blue);
-    border-radius: 50%;
-    box-shadow: 0 0 10px var(--neon-blue);
-}
-
-.hero-content h1 {
-    font-size: clamp(2.5rem, 4vw, 4rem);
-    margin-bottom: 1.5rem;
-}
-
-.hero-content p {
-    color: var(--text-secondary);
-    font-size: 1.1rem;
-    margin-bottom: 2.5rem;
-    max-width: 90%;
-}
-
-.input-area {
-    padding: 1.5rem;
-    position: relative;
-}
-
-.input-area::before {
-    content: ''; position: absolute; inset: -1px;
-    background: linear-gradient(45deg, var(--border-glass), var(--neon-purple), var(--border-glass));
-    z-index: -1; border-radius: 17px; opacity: 0;
-    transition: opacity 0.4s;
-}
-
-.input-area:focus-within::before { opacity: 1; }
-
-.input-area textarea {
-    width: 100%;
-    height: 120px;
-    background: transparent;
-    border: none;
-    color: var(--text-primary);
-    font-family: var(--font-sans);
-    font-size: 1rem;
-    resize: none;
-    outline: none;
-}
-
-.input-area textarea::placeholder { color: #555; }
-
-.input-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 1rem;
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-}
-
-.btn-glow {
-    background: linear-gradient(90deg, #111, #222);
-    color: var(--text-primary);
-    border: 1px solid var(--border-glass);
-    padding: 0.6rem 1.2rem;
-    border-radius: 8px;
-    font-family: var(--font-sans);
-    font-size: 0.9rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.btn-glow:hover {
-    border-color: var(--neon-blue);
-    box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
-}
-
-/* ================= Code Window / JSON Preview ================= */
-
-.hero-preview {
-    perspective: 1000px;
-}
-
-.code-window {
-    background: #09090b;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transform: rotateY(-5deg) rotateX(5deg);
-    transition: transform 0.5s ease;
-    box-shadow: -20px 20px 40px rgba(0, 0, 0, 0.5);
-    /* FIX: clip contents properly without cutting off output */
-    overflow: hidden;
-    width: 100%;
-}
-
-.code-window:hover {
-    transform: rotateY(0) rotateX(0);
-}
-
-/* Window Header */
-.window-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem;
-    border-bottom: 1px solid var(--border-glass);
-    background: rgba(255, 255, 255, 0.02);
-    /* FIX: keep header always visible above scrolling body */
-    position: relative;
-    z-index: 2;
-}
-
-.window-dots {
-    display: flex;
-    gap: 6px;
-}
-
-.dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-}
-
-.dot.red    { background: #ff5f56; }
-.dot.yellow { background: #ffbd2e; }
-.dot.green  { background: #27c93f; }
-
-.window-title {
-    color: var(--text-secondary);
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
-}
-
-/* Copy Button */
-.copy-btn {
-    background: transparent;
-    border: none;
-    color: var(--text-secondary);
-    cursor: pointer;
-    font-size: 1.1rem;
-    transition: color 0.3s ease;
-}
-
-.copy-btn:hover { color: var(--text-primary); }
-
-/* ── FIX: Output window body ── */
-.window-body {
-    display: flex;
-    align-items: flex-start;
-    padding: 1.25rem 1rem;
-    font-family: var(--font-mono);
-    font-size: 0.875rem;
-    line-height: 1.6;
-
-    /* FIX 1: was overflow-y: hidden — now scrolls vertically for long JSON */
-    overflow-x: auto;
-    overflow-y: auto;
-
-    /* FIX 2: bounded height so the window doesn't grow forever */
-    min-height: 260px;
-    max-height: 420px;
-
-    /* FIX 3: thin custom scrollbar */
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
-}
-
-.window-body::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
-}
-.window-body::-webkit-scrollbar-track { background: transparent; }
-.window-body::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.12);
-    border-radius: 3px;
-}
-.window-body::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.25);
-}
-
-/* ── FIX: Line numbers — sticky so they don't scroll away horizontally ── */
-.line-numbers {
-    /* FIX: sticky left so numbers stay visible on horizontal scroll */
-    position: sticky;
-    left: 0;
-    /* match window bg so numbers sit cleanly over content */
-    background: #09090b;
-    z-index: 1;
-
-    min-width: 38px;
-    padding-right: 14px;
-    margin-right: 14px;
-    text-align: right;
-    color: #444;
-    user-select: none;
-    border-right: 1px solid rgba(255, 255, 255, 0.07);
-    flex-shrink: 0;
-    line-height: 1.6;
-
-    /* smooth line count updates */
-    transition: color 0.2s;
-}
-
-/* JSON Output */
-#json-output {
-    flex: 1;
-    white-space: pre;          /* FIX: keep strict indentation intact */
-    overflow-wrap: normal;
-    word-break: normal;
-    color: var(--text-primary);
-    line-height: 1.6;
-    min-width: 0;
-}
-
-/* Syntax Highlighting */
-.language-json { color: var(--text-primary); }
-.json-key     { color: var(--cyan); }
-.json-string  { color: #a5d6ff; }
-.json-number  { color: #d2a8ff; }
-.json-boolean { color: #79c0ff; }
-.json-null    { color: #6e7681; }
-.json-comment { color: #6e7681; font-style: italic; }
-
-/* ================= Features Section ================= */
-.features {
-    padding: 6rem 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.section-header {
-    text-align: center;
-    margin-bottom: 4rem;
-}
-
-.section-header h2 { font-size: 2.5rem; margin-bottom: 1rem; }
-.section-header p { color: var(--text-secondary); max-width: 600px; margin: 0 auto; }
-
-.features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-}
-
-.feature-card {
-    padding: 2rem;
-    position: relative;
-    transition: transform 0.3s, background 0.3s;
-}
-
-.feature-card:hover {
-    transform: translateY(-5px);
-    background: rgba(30, 30, 40, 0.6);
-}
-
-.feature-card::before {
-    content: ''; position: absolute; inset: 0;
-    border-radius: 16px; border: 1px solid transparent;
-    background: linear-gradient(135deg, var(--neon-blue), transparent, var(--neon-purple)) border-box;
-    -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor; mask-composite: exclude;
-    opacity: 0; transition: opacity 0.4s;
-}
-
-.feature-card:hover::before { opacity: 1; }
-
-.feature-icon {
-    width: 50px; height: 50px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.8rem; color: var(--neon-blue);
-    margin-bottom: 1.5rem;
-    border: 1px solid var(--border-glass);
-}
-
-.feature-card h3 { margin-bottom: 1rem; font-size: 1.25rem; }
-.feature-card p { color: var(--text-secondary); font-size: 0.95rem; }
-
-/* ================= Interactive Demo Section ================= */
-.demo-section { padding: 4rem 2rem 8rem; max-width: 1200px; margin: 0 auto; }
-
-.demo-container {
-    display: grid;
-    grid-template-columns: 1fr 1.5fr;
-    gap: 4rem; padding: 4rem;
-    align-items: center;
-    background: linear-gradient(180deg, rgba(20,20,25,0.4) 0%, rgba(10,10,12,0.8) 100%);
-}
-
-.demo-text h2 { font-size: 2rem; margin-bottom: 1rem; }
-.demo-text p { color: var(--text-secondary); margin-bottom: 2rem; }
-
-.demo-benefits { list-style: none; }
-.demo-benefits li {
-    display: flex; align-items: center; gap: 0.8rem;
-    margin-bottom: 1rem; color: #d1d5db;
-}
-.demo-benefits i { color: var(--neon-purple); font-size: 1.2rem; }
-
-.demo-terminal {
-    background: #000;
-    border-radius: 12px; border: 1px solid #333;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-}
-
-.terminal-header {
-    background: #111; padding: 0.8rem 1rem;
-    font-family: var(--font-mono); font-size: 0.8rem;
-    color: #888; display: flex; align-items: center; gap: 0.5rem;
-    border-bottom: 1px solid #333;
-}
-
-.terminal-body { padding: 1.5rem; font-family: var(--font-mono); font-size: 0.9rem; }
-.term-input { color: #fff; margin-bottom: 1rem; }
-.prompt-arrow { color: var(--neon-blue); font-weight: bold; margin-right: 8px; }
-.term-loading { color: var(--neon-purple); margin-bottom: 1rem; animation: pulse 1s infinite; }
-.term-output { color: #a5d6ff; line-height: 1.6; white-space: pre-wrap; }
-
-/* ================= Footer ================= */
-footer {
-    border-top: 1px solid var(--border-glass);
-    background: rgba(5,5,5,0.9);
-    padding: 4rem 2rem 2rem;
-}
-
-.footer-container {
-    max-width: 1200px; margin: 0 auto;
-    display: flex; justify-content: space-between;
-    flex-wrap: wrap; gap: 3rem; margin-bottom: 3rem;
-}
-
-.footer-brand .logo { margin-bottom: 1rem; }
-.footer-brand p { color: var(--text-secondary); max-width: 300px; font-size: 0.9rem; }
-
-.footer-links { display: flex; gap: 4rem; }
-.link-group h4 { margin-bottom: 1.2rem; font-size: 1rem; }
-.link-group a {
-    display: block; color: var(--text-secondary);
-    text-decoration: none; margin-bottom: 0.8rem;
-    font-size: 0.9rem; transition: color 0.3s;
-}
-.link-group a:hover { color: var(--text-primary); }
-.link-group i { margin-right: 6px; }
-
-.footer-bottom {
-    max-width: 1200px; margin: 0 auto;
-    padding-top: 2rem; border-top: 1px solid var(--border-glass);
-    display: flex; justify-content: space-between;
-    color: var(--text-secondary); font-size: 0.85rem;
-}
-.legal a { color: var(--text-secondary); text-decoration: none; margin-left: 1rem; }
-.legal a:hover { color: var(--text-primary); }
-
-/* ================= Animations & Responsive ================= */
-.fade-in-up {
-    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    opacity: 0; transform: translateY(30px);
-}
-
-@keyframes fadeInUp {
-    to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
-}
-
-@media (max-width: 992px) {
-    .hero-container, .demo-container { grid-template-columns: 1fr; gap: 2rem; }
-    .hero { padding-top: 6rem; }
-    .code-window { transform: none; }
-    .footer-links { flex-wrap: wrap; gap: 2rem; }
-}
-
-@media (max-width: 768px) {
-    .nav-links { display: none; }
-    .hero-content h1 { font-size: 2.2rem; }
-    .demo-container { padding: 2rem; }
-    .footer-container { flex-direction: column; }
-}
+document.addEventListener("DOMContentLoaded", () => {
+
+    // ==========================================
+    // 📦 DOM ELEMENTS
+    // ==========================================
+    const generateBtn  = document.getElementById("generate-btn");
+    const promptInput  = document.getElementById("prompt-input");
+    const jsonOutput   = document.getElementById("json-output");
+    const copyBtn      = document.getElementById("copy-btn");
+    const lineNumbers  = document.getElementById("line-numbers");
+
+    // ==========================================
+    // 🌐 API ROUTE
+    // ==========================================
+    const API_URL = "/api/generate";
+
+    // ==========================================
+    // 🚀 GENERATE BUTTON
+    // ==========================================
+    generateBtn.addEventListener("click", generateJSON);
+
+    promptInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            generateJSON();
+        }
+    });
+
+    // ==========================================
+    // 🧠 GENERATE JSON
+    // ==========================================
+    async function generateJSON() {
+
+        const prompt = promptInput.value.trim();
+
+        if (!prompt) {
+            renderError("Please enter a prompt.");
+            return;
+        }
+
+        setLoadingState(true);
+
+        try {
+            const result     = await fetchFromAI(prompt);
+            const jsonString = JSON.stringify(result, null, 2);
+
+            // FIX: set total line count upfront so numbers appear instantly
+            updateLineNumbers(jsonString.split("\n").length);
+
+            const highlightedHTML = syntaxHighlight(jsonString);
+
+            // FIX: pass jsonString so typewriter can track newlines live
+            await typeHTML(highlightedHTML, jsonOutput, jsonString, 8);
+
+        } catch (error) {
+            console.error("Frontend Error:", error);
+            renderError(error.message || "Something went wrong.");
+        } finally {
+            setLoadingState(false);
+        }
+    }
+
+    // ==========================================
+    // 🌐 FETCH API
+    // ==========================================
+    async function fetchFromAI(prompt) {
+
+        const controller = new AbortController();
+        const timeout    = setTimeout(() => controller.abort(), 30000);
+
+        const response = await fetch(API_URL, {
+            method: "POST",
+            signal: controller.signal,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ prompt })
+        });
+
+        clearTimeout(timeout);
+
+        let data;
+        try {
+            data = await response.json();
+        } catch {
+            throw new Error("Invalid response from server.");
+        }
+
+        if (!response.ok) {
+            throw new Error(data.error || `Server Error ${response.status}`);
+        }
+
+        return data;
+    }
+
+    // ==========================================
+    // 🔢 UPDATE LINE NUMBERS
+    // FIX: accepts a number directly (no more splitting HTML strings)
+    // ==========================================
+    function updateLineNumbers(count) {
+        lineNumbers.innerHTML = Array.from(
+            { length: count },
+            (_, i) => i + 1
+        ).join("<br>");
+    }
+
+    // ==========================================
+    // 🎨 JSON SYNTAX HIGHLIGHTER
+    // FIX: removed indented template literals that injected
+    //      stray whitespace/newlines into <pre> output
+    // ==========================================
+    function syntaxHighlight(jsonString) {
+
+        const escaped = jsonString
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;");
+
+        return escaped.replace(
+            /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(\.\d+)?([eE][+\-]?\d+)?)/g,
+            (match) => {
+
+                if (/^"/.test(match)) {
+                    // FIX: was multi-line template literal — now single line, no whitespace injection
+                    if (/:$/.test(match)) {
+                        return `<span class="json-key">${match.slice(0, -1)}</span>:`;
+                    }
+                    return `<span class="json-string">${match}</span>`;
+                }
+
+                if (/true|false/.test(match)) {
+                    return `<span class="json-boolean">${match}</span>`;
+                }
+
+                if (/null/.test(match)) {
+                    return `<span class="json-null">${match}</span>`;
+                }
+
+                return `<span class="json-number">${match}</span>`;
+            }
+        );
+    }
+
+    // ==========================================
+    // ⌨️ TYPEWRITER EFFECT
+    // FIX: live line-number updates on each newline char
+    // FIX: speed tuned — HTML tags skipped instantly,
+    //      visible chars typed at `speed` ms each
+    // ==========================================
+    function typeHTML(html, element, plainText, speed = 8) {
+
+        return new Promise((resolve) => {
+
+            let i          = 0;
+            let output     = "";
+            let lineCount  = 1;
+
+            element.innerHTML = "";
+            updateLineNumbers(lineCount);
+
+            // Pre-count total lines for reference
+            const totalLines = (plainText.match(/\n/g) || []).length + 1;
+
+            function type() {
+
+                if (i >= html.length) {
+                    // Ensure final count is exact
+                    updateLineNumbers(totalLines);
+                    resolve();
+                    return;
+                }
+
+                // Skip HTML tags instantly (no delay)
+                if (html[i] === "<") {
+                    const closeIdx = html.indexOf(">", i);
+                    if (closeIdx !== -1) {
+                        output += html.slice(i, closeIdx + 1);
+                        i       = closeIdx + 1;
+                        element.innerHTML = output;
+                        requestAnimationFrame(type);
+                        return;
+                    }
+                }
+
+                // Skip HTML entities as single units (no delay)
+                if (html[i] === "&") {
+                    const semiIdx = html.indexOf(";", i);
+                    if (semiIdx !== -1 && semiIdx - i <= 6) {
+                        output += html.slice(i, semiIdx + 1);
+                        i       = semiIdx + 1;
+                        element.innerHTML = output;
+                        setTimeout(type, speed);
+                        return;
+                    }
+                }
+
+                const char = html[i];
+                output    += char;
+                element.innerHTML = output;
+
+                // FIX: increment line count live when a newline is typed
+                if (char === "\n") {
+                    lineCount++;
+                    updateLineNumbers(lineCount);
+                }
+
+                i++;
+                setTimeout(type, speed);
+            }
+
+            type();
+        });
+    }
+
+    // ==========================================
+    // 📋 COPY BUTTON
+    // ==========================================
+    copyBtn.addEventListener("click", copyJSON);
+
+    async function copyJSON() {
+        try {
+            await navigator.clipboard.writeText(jsonOutput.innerText);
+            copyBtn.innerHTML = '<i class="ph ph-check"></i>';
+            setTimeout(() => {
+                copyBtn.innerHTML = '<i class="ph ph-copy"></i>';
+            }, 1500);
+        } catch (error) {
+            console.error("Copy Error:", error);
+            renderError("Failed to copy JSON.");
+        }
+    }
+
+    // ==========================================
+    // ⚡ LOADING STATE
+    // ==========================================
+    function setLoadingState(isLoading) {
+
+        generateBtn.disabled = isLoading;
+
+        if (isLoading) {
+            generateBtn.innerHTML = `<i class="ph ph-spinner ph-spin"></i> Generating...`;
+            jsonOutput.innerHTML  = `<span class="json-comment">// Generating JSON...</span>`;
+            updateLineNumbers(1);
+        } else {
+            generateBtn.innerHTML = `Generate JSON <i class="ph ph-arrow-right"></i>`;
+        }
+    }
+
+    // ==========================================
+    // ❌ ERROR UI
+    // ==========================================
+    function renderError(message) {
+        jsonOutput.innerHTML = `<span class="json-comment" style="color:#ff5555;">// ERROR:\n// ${message}</span>`;
+        updateLineNumbers(2);
+    }
+
+    // ==========================================
+    // 🎬 DEMO TERMINAL ANIMATION
+    // FIX: speed reduced from 15ms → 6ms for snappier feel
+    // ==========================================
+    const demoTerminal = document.getElementById("demo-output");
+    const termLoading  = document.querySelector(".term-loading");
+
+    let demoPlayed = false;
+
+    const demoJson = `{
+  "server": {
+    "port": 8080,
+    "dev_mode": true
+  }
+}`;
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !demoPlayed) {
+                demoPlayed = true;
+
+                setTimeout(() => {
+                    termLoading.style.display = "block";
+
+                    setTimeout(async () => {
+                        termLoading.style.display = "none";
+                        const highlighted = syntaxHighlight(demoJson);
+                        // FIX: speed 6ms — fast enough to feel snappy, slow enough to read
+                        await typeHTML(highlighted, demoTerminal, demoJson, 6);
+                    }, 1200);
+
+                }, 500);
+            }
+        });
+    }, { threshold: 0.5 });
+
+    const demoSection = document.querySelector(".demo-terminal");
+    if (demoSection) observer.observe(demoSection);
+
+});
