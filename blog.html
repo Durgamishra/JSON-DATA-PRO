@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog | JSON Data Pro</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: #0b1120;
+      overflow-x: hidden;
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .gradient-text {
+      background: linear-gradient(to right, #38bdf8, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-bg {
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,0.25), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(139,92,246,0.25), transparent 35%),
+        #0b1120;
+    }
+
+    .card-hover {
+      transition: all 0.35s ease;
+    }
+
+    .card-hover:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(59,130,246,0.2);
+    }
+  </style>
+</head>
+<body class="text-white hero-bg min-h-screen">
+
+  <!-- Navbar -->
+  <header class="sticky top-0 z-50 backdrop-blur-lg bg-[#0b1120]/80 border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div>
+        <h1 class="text-2xl font-bold gradient-text">JSON Data Pro</h1>
+      </div>
+
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
+        <a href="index.html" class="hover:text-cyan-400 transition">Home</a>
+        <a href="about.html" class="hover:text-cyan-400 transition">About</a>
+        <a href="blog.html" class="text-cyan-400">Blog</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="relative py-24 px-6">
+    <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-14 items-center">
+
+      <div>
+        <span class="px-4 py-2 rounded-full glass text-cyan-300 text-sm inline-block mb-6">
+          Latest Insights & Tech Articles
+        </span>
+
+        <h2 class="text-5xl md:text-6xl font-extrabold leading-tight mb-6">
+          Explore the Future of
+          <span class="gradient-text">JSON & Web Technologies</span>
+        </h2>
+
+        <p class="text-gray-300 text-lg leading-relaxed mb-8 max-w-xl">
+          Discover tutorials, development strategies, API integration guides,
+          backend optimization tips, and modern JSON workflows designed for developers.
+        </p>
+
+        <div class="flex flex-wrap gap-4">
+          <button class="bg-gradient-to-r from-cyan-500 to-blue-600 px-7 py-3 rounded-full font-semibold hover:scale-105 transition">
+            Read Articles
+          </button>
+        </div>
+      </div>
+
+      <div class="glass rounded-3xl p-8 border border-white/10 shadow-2xl">
+        <img
+          src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=1200&auto=format&fit=crop"
+          alt="Blog Illustration"
+          class="rounded-2xl w-full h-[420px] object-cover"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Blog -->
+  <section class="px-6 py-10">
+    <div class="max-w-7xl mx-auto">
+
+      <div class="flex items-center justify-between mb-10 flex-wrap gap-4">
+        <div>
+          <h3 class="text-4xl font-bold mb-3">Featured Articles</h3>
+          <p class="text-gray-400">Stay updated with the latest trends in development.</p>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+        <!-- Card 1 -->
+        <article class="glass rounded-3xl overflow-hidden card-hover">
+          <img
+            src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1200&auto=format&fit=crop"
+            class="w-full h-56 object-cover"
+            alt="Blog"
+          />
+
+          <div class="p-6">
+            <span class="text-cyan-400 text-sm font-semibold">Development</span>
+
+            <h4 class="text-2xl font-bold mt-3 mb-4 leading-snug">
+              Mastering JSON APIs for Modern Web Apps
+            </h4>
+
+            <p class="text-gray-400 text-sm leading-relaxed mb-6">
+              Learn how developers efficiently integrate APIs using JSON structures,
+              fetch requests, and secure backend communication.
+            </p>
+
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-500">May 2026</span>
+              <a 
+            href="https://dev.to/hardik_b2d8f0bca/json-formatter-validator-master-json-for-modern-apis-2fid"
+            target="_blank"
+            class="text-cyan-400 hover:text-cyan-300 font-medium"
+            >
+                Read More →
+               </a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 2 -->
+        <article class="glass rounded-3xl overflow-hidden card-hover">
+            <img
+                src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&w=1200&auto=format&fit=crop"
+                class="w-full h-56 object-cover"
+                alt="Blog"
+            />
+
+            <div class="p-6">
+                <span class="text-violet-400 text-sm font-semibold">Backend</span>
+
+                <h4 class="text-2xl font-bold mt-3 mb-4 leading-snug">
+                Node.js Performance Optimization Techniques
+                </h4>
+
+                <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                Explore caching, asynchronous processing, and database optimization
+                techniques for scalable backend applications.
+                </p>
+
+                <div class="flex items-center justify-between">
+                <span class="text-sm text-gray-500">May 2026</span>
+
+                <a
+                    href="https://www.grapestechsolutions.com/blog/nodejs-performance-optimize-tips/"
+                    target="_blank"
+                    class="text-cyan-400 hover:text-cyan-300 font-medium"
+                >
+                    Read More →
+                </a>
+                </div>
+            </div>
+        </article>
+        <!-- Card 3 -->
+        <article class="glass rounded-3xl overflow-hidden card-hover">
+          <img
+            src="https://images.unsplash.com/photo-1526379095098-d400fd0bf935?q=80&w=1200&auto=format&fit=crop"
+            class="w-full h-56 object-cover"
+            alt="Blog"
+          />
+
+          <div class="p-6">
+            <span class="text-pink-400 text-sm font-semibold">Security</span>
+
+            <h4 class="text-2xl font-bold mt-3 mb-4 leading-snug">
+              JSON Security Best Practices Every Developer Needs
+            </h4>
+
+            <p class="text-gray-400 text-sm leading-relaxed mb-6">
+              Protect your APIs from vulnerabilities with secure validation,
+              authentication, and encrypted data transmission.
+            </p>
+
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-500">May 2026</span>
+              <a class="text-cyan-400 hover:text-cyan-300 font-medium" href="https://blog.postman.com/api-security-best-practices/" target="_blank">
+                Read More →
+              </a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t border-white/10 py-10 px-6">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between gap-8">
+
+      <div>
+        <h4 class="text-2xl font-bold gradient-text mb-3">JSON Data Pro</h4>
+        <p class="text-gray-400 max-w-md leading-relaxed">
+          Building developer-focused solutions, tutorials, and modern web experiences.
+        </p>
+      </div>
+
+    <div class="text-center text-gray-500 text-sm mt-10">
+      © 2026 JSON Data Pro. All rights reserved.
+    </div>
+  </footer>
+
+</body>
+</html>
+```
