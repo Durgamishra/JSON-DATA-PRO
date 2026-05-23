@@ -1,6 +1,101 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     // ==========================================
+    // ✨ HERO PARTICLE SYSTEM
+    // ==========================================
+    const particleCanvas = document.getElementById("hero-particles");
+    if (particleCanvas) {
+        const ctx = particleCanvas.getContext("2d");
+        let particles = [];
+        const PARTICLE_COUNT = 60;
+
+        function resizeCanvas() {
+            particleCanvas.width = window.innerWidth;
+            particleCanvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener("resize", resizeCanvas);
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * particleCanvas.width;
+                this.y = Math.random() * particleCanvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.4;
+                this.speedY = (Math.random() - 0.5) * 0.4;
+                this.opacity = Math.random() * 0.5 + 0.1;
+                this.opacityDirection = Math.random() > 0.5 ? 1 : -1;
+                // Purple / Blue-Gray / White palette
+                const colors = [
+                    "176, 38, 255",  // neon-purple
+                    "120, 119, 198", // slate-indigo
+                    "255, 255, 255"  // white
+                ];
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                // Twinkle
+                this.opacity += this.opacityDirection * 0.003;
+                if (this.opacity >= 0.6) this.opacityDirection = -1;
+                if (this.opacity <= 0.05) this.opacityDirection = 1;
+                // Wrap around edges
+                if (this.x < 0) this.x = particleCanvas.width;
+                if (this.x > particleCanvas.width) this.x = 0;
+                if (this.y < 0) this.y = particleCanvas.height;
+                if (this.y > particleCanvas.height) this.y = 0;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${this.color}, ${this.opacity})`;
+                ctx.fill();
+            }
+        }
+
+        // Initialize particles
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+            particles.push(new Particle());
+        }
+
+        // Draw connecting lines between nearby particles
+        function drawLines() {
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 120) {
+                        const lineOpacity = (1 - dist / 120) * 0.15;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(176, 38, 255, ${lineOpacity})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            drawLines();
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+    }
+
+
+    // ==========================================
     // 📦 DOM ELEMENTS
     // ==========================================
     const generateBtn  = document.getElementById("generate-btn");
