@@ -17,8 +17,9 @@
     <!-- Background Effects -->
     <div class="bg-grid"></div>
     <div class="glow-orb orb-1"></div>
-    <div class="glow-orb orb-2"></div>
-    <div class="glow-orb orb-3"></div>
+
+    <!-- Hero Particle Canvas -->
+    <canvas id="hero-particles"></canvas>
 
     <!-- Sticky Navbar -->
     <nav class="navbar">
@@ -41,15 +42,15 @@
 
     <!-- Main Hero Section -->
     <header class="hero" id="hero">
-        <div class="hero-container fade-in-up">
+        <div class="hero-container">
             <div class="hero-content">
-                <div class="badge">
+                <div class="badge hero-anim" style="--anim-order: 0;">
                     <span class="badge-dot"></span> Gpt Turbo 3.5 Now Live
                 </div>
-                <h1>Convert Human Language into <span class="text-gradient">Structured JSON</span> Instantly</h1>
-                <p>The ultimate AI-powered developer tool. Describe your data structure in natural language, and let our engine generate production-ready, perfectly formatted JSON in milliseconds.</p>
+                <h1 class="hero-anim" style="--anim-order: 1;">Convert Human Language into <span class="text-gradient text-gradient-animated">Structured JSON</span> Instantly</h1>
+                <p class="hero-anim" style="--anim-order: 2;">The ultimate AI-powered developer tool. Describe your data structure in natural language, and let our engine generate production-ready, perfectly formatted JSON in milliseconds.</p>
                 
-                <div class="input-area glass-panel">
+                <div class="input-area glass-panel hero-anim" style="--anim-order: 3;">
                     <textarea id="prompt-input" placeholder="e.g. Create a user profile with a name, email, nested address object, and an array of 3 recent order IDs..."></textarea>
                     <div class="input-footer">
                         <span><i class="ph ph-sparkle text-neon-purple"></i> AI Engine Ready</span>
@@ -60,13 +61,12 @@
                 </div>
             </div>
 
-            <div class="hero-preview">
+            <div class="hero-preview hero-anim" style="--anim-order: 2;">
                 <div class="code-window glass-panel">
                     <div class="window-header">
                         <div class="window-dots">
                             <span class="dot red"></span>
                             <span class="dot yellow"></span>
-                            <span class="dot green"></span>
                         </div>
                         <div class="window-title">output.json</div>
                         <button class="copy-btn" id="copy-btn" title="Copy to clipboard">
