@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About | JSON Data Pro</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: #050816;
+      color: white;
+      overflow-x: hidden;
+    }
+
+    .glass {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+
+    .gradient-text {
+      background: linear-gradient(90deg, #00c6ff, #0072ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .floating {
+      animation: float 4s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-12px); }
+      100% { transform: translateY(0px); }
+    }
+
+    .glow {
+      box-shadow: 0 0 30px rgba(0, 114, 255, 0.4);
+    }
+
+    .skill-card:hover {
+      transform: translateY(-8px);
+      transition: 0.3s ease;
+      border-color: #00c6ff;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="w-full px-6 py-5 flex justify-between items-center glass fixed top-0 z-50">
+
+    <a href="index.html" class="text-2xl font-bold gradient-text">
+      JSON Data Pro
+    </a>
+
+    <div class="space-x-6 hidden md:flex">
+      <a href="index.html" class="hover:text-cyan-400 transition">Home</a>
+
+      <a href="about.html" class="text-cyan-400 font-semibold">
+        About
+      </a>
+
+      <a href="#skills" class="hover:text-cyan-400 transition">
+        Skills
+      </a>
+
+      <a href="#projects" class="hover:text-cyan-400 transition">
+        Projects
+      </a>
+    </div>
+
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="min-h-screen flex items-center justify-center px-6 pt-24">
+
+    <div class="max-w-6xl grid md:grid-cols-2 gap-12 items-center">
+
+      <!-- Left Content -->
+      <div>
+
+        <p class="uppercase tracking-[4px] text-cyan-400 mb-4">
+          About The Developer
+        </p>
+
+        <h1 class="text-5xl md:text-6xl font-bold leading-tight mb-6">
+          Building Smart
+          <span class="gradient-text">Developer Tools</span>
+        </h1>
+
+        <p class="text-gray-300 text-lg leading-relaxed mb-8">
+          Passionate and growth-driven developer focused on building modern,
+          efficient, and user-friendly web applications.
+          I enjoy transforming complex ideas into practical digital solutions
+          while continuously leveling up my skills in full-stack development,
+          Data Structures & Algorithms, and backend technologies.
+        </p>
+
+        <p class="text-gray-300 text-lg leading-relaxed mb-8">
+          Recently, I developed
+          <span class="text-cyan-400 font-semibold">JSON Data Pro</span>
+          — an interactive JSON exploration and visualization platform
+          designed to simplify working with structured data through smart search,
+          organized datasets, and intuitive navigation.
+        </p>
+
+        <div class="text-gray-300 text-lg leading-relaxed mb-8">
+
+          <p class="mb-4 font-semibold text-cyan-400">
+            I am deeply interested in:
+          </p>
+
+          <ul class="space-y-3 ml-4 list-disc">
+
+            <li>Full-Stack Web Development</li>
+
+            <li>Backend Systems & APIs</li>
+
+            <li>Database Management</li>
+
+            <li>Problem Solving with DSA in C/Python</li>
+
+            <li>UI/UX Focused Development</li>
+
+            <li>Developer Productivity Tools</li>
+
+          </ul>
+
+        </div>
+
+        <p class="text-gray-300 text-lg leading-relaxed mb-8">
+          I believe in learning by building real-world projects,
+          solving challenges consistently, and pushing beyond comfort zones
+          to evolve both technically and creatively.
+        </p>
+
+        <p class="text-gray-300 text-lg leading-relaxed mb-8">
+          Currently focused on sharpening my software engineering skills,
+          exploring scalable architectures, and creating impactful projects
+          that combine functionality with clean user experiences.
+        </p>
+
+        <div class="flex gap-4 flex-wrap">
+
+          <a href="https://json-data-pro.vercel.app/"
+             target="_blank"
+             class="px-6 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 transition font-semibold glow">
+
+            Visit Website
+
+          </a>
+
+          <a href="#skills"
+             class="px-6 py-3 rounded-xl border border-cyan-500 hover:bg-cyan-500/10 transition">
+
+            Explore Skills
+
+          </a>
+
+        </div>
+
+      </div>
+
+      <!-- Right Profile Card -->
+      <div class="flex justify-center">
+
+        <div class="glass rounded-3xl p-8 floating glow max-w-md w-full">
+
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/2721/2721297.png"
+            alt="Developer"
+            class="w-52 mx-auto mb-6"
+          />
+
+          <h2 class="text-2xl font-semibold text-center mb-4 gradient-text">
+            Developer Profile
+          </h2>
+
+          <div class="space-y-4 text-gray-300">
+
+            <div class="flex justify-between">
+              <span>Name</span>
+              <span class="text-cyan-400">Durga Prasad Mishra</span>
+            </div>
+
+            <div class="flex justify-between">
+              <span>Focus</span>
+              <span class="text-cyan-400">AI Engineer</span>
+            </div>
+
+            <div class="flex justify-between">
+              <span>Speciality</span>
+              <span class="text-cyan-400">Backend + UI</span>
+            </div>
+
+            <div class="flex justify-between">
+              <span>Learning</span>
+              <span class="text-cyan-400">Agentic AI</span>
+            </div>
+
+            <div class="flex justify-between">
+              <span>Mission</span>
+              <span class="text-cyan-400">Build Impactful Products</span>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- Skills -->
+  <section id="skills" class="py-24 px-6">
+
+    <div class="max-w-6xl mx-auto text-center">
+
+      <h2 class="text-4xl font-bold mb-4">
+        My <span class="gradient-text">Skills</span>
+      </h2>
+
+      <p class="text-gray-400 max-w-2xl mx-auto mb-14">
+        Technologies and areas I continuously improve while building real-world projects.
+      </p>
+
+      <div class="grid md:grid-cols-3 gap-8">
+
+        <div class="glass rounded-2xl p-8 skill-card transition">
+
+          <div class="text-5xl mb-4">💻</div>
+
+          <h3 class="text-2xl font-semibold mb-3">
+            Frontend Development
+          </h3>
+
+          <p class="text-gray-400">
+            Creating responsive and interactive interfaces using modern web technologies.
+          </p>
+
+        </div>
+
+        <div class="glass rounded-2xl p-8 skill-card transition">
+
+          <div class="text-5xl mb-4">⚙️</div>
+
+          <h3 class="text-2xl font-semibold mb-3">
+            Backend Engineering
+          </h3>
+
+          <p class="text-gray-400">
+            Building APIs, handling databases, and scalable server-side systems.
+          </p>
+
+        </div>
+
+        <div class="glass rounded-2xl p-8 skill-card transition">
+
+          <div class="text-5xl mb-4">🧠</div>
+
+          <h3 class="text-2xl font-semibold mb-3">
+            Problem Solving
+          </h3>
+
+          <p class="text-gray-400">
+            Improving logic and efficiency through DSA and algorithmic thinking.
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- Projects -->
+  <section id="projects" class="py-24 px-6">
+
+    <div class="max-w-6xl mx-auto">
+
+      <div class="text-center mb-16">
+
+        <h2 class="text-4xl font-bold mb-4">
+          Featured <span class="gradient-text">Project</span>
+        </h2>
+
+        <p class="text-gray-400 max-w-2xl mx-auto">
+          A platform designed to simplify JSON interaction and improve developer productivity.
+        </p>
+
+      </div>
+
+      <div class="glass rounded-3xl overflow-hidden grid md:grid-cols-2">
+
+        <div class="p-10 flex flex-col justify-center">
+
+          <h3 class="text-3xl font-bold mb-5 gradient-text">
+            JSON Data Pro
+          </h3>
+
+          <p class="text-gray-300 leading-relaxed mb-6">
+            JSON Data Pro is an interactive platform for exploring,
+            organizing, and visualizing structured JSON data efficiently.
+          </p>
+
+          <ul class="space-y-3 text-gray-400 mb-8">
+
+            <li>✔ Interactive JSON Visualization</li>
+
+            <li>✔ Structured Data Navigation</li>
+
+            <li>✔ Responsive Modern UI</li>
+
+            <li>✔ Fast and Lightweight Experience</li>
+
+          </ul>
+
+          <a href="https://json-data-pro.vercel.app/"
+             target="_blank"
+             class="w-fit px-6 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 transition font-semibold glow">
+
+            Open Project
+
+          </a>
+
+        </div>
+
+        <div class="flex items-center justify-center p-10 bg-gradient-to-br from-cyan-500/10 to-blue-500/10">
+
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/2103/2103633.png"
+            alt="Project"
+            class="w-72 floating"
+          />
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t border-white/10 py-8 text-center text-gray-500">
+
+    © 2026 JSON Data Pro • Crafted with passion and creativity.
+
+  </footer>
+
+</body>
+</html>
