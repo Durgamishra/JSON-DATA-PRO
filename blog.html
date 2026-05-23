@@ -19,38 +19,106 @@
     body {
       background: #0b1120;
       overflow-x: hidden;
+      position: relative;
     }
 
     .glass {
-      background: rgba(255, 255, 255, 0.06);
+      background: rgba(255, 255, 255, 0.04);
       backdrop-filter: blur(14px);
-      border: 1px solid rgba(255,255,255,0.08);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     }
 
     .gradient-text {
       background: linear-gradient(to right, #38bdf8, #8b5cf6);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .hero-bg {
       background:
-        radial-gradient(circle at top left, rgba(59,130,246,0.25), transparent 35%),
-        radial-gradient(circle at bottom right, rgba(139,92,246,0.25), transparent 35%),
+        radial-gradient(circle at top left, rgba(59,130,246,0.15), transparent 45%),
+        radial-gradient(circle at bottom right, rgba(139,92,246,0.15), transparent 45%),
         #0b1120;
     }
 
+    /* Background Orbs */
+    .bg-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      z-index: -1;
+      opacity: 0.15;
+      pointer-events: none;
+      animation: pulseOrb 12s infinite alternate ease-in-out;
+    }
+    .orb-purple {
+      background: #8b5cf6;
+      width: 450px;
+      height: 450px;
+      top: 10%;
+      right: -15%;
+    }
+    .orb-blue {
+      background: #38bdf8;
+      width: 400px;
+      height: 400px;
+      top: 45%;
+      left: -15%;
+      animation-delay: -6s;
+    }
+
+    @keyframes pulseOrb {
+      0% { transform: scale(1) translate(0, 0); opacity: 0.1; }
+      100% { transform: scale(1.15) translate(40px, 40px); opacity: 0.25; }
+    }
+
+    /* Entrance Animations */
+    .animate-reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      animation: reveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation-delay: var(--delay, 0s);
+    }
+
+    @keyframes reveal {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Scroll Reveal */
+    .reveal-on-scroll {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal-on-scroll.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Card Hover Animations */
     .card-hover {
-      transition: all 0.35s ease;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .card-hover:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 20px 40px rgba(59,130,246,0.2);
+      transform: translateY(-10px) scale(1.015);
+      box-shadow: 0 20px 45px rgba(56, 189, 248, 0.15);
+      border-color: rgba(56, 189, 248, 0.3);
+      background: rgba(255, 255, 255, 0.07);
     }
   </style>
 </head>
 <body class="text-white hero-bg min-h-screen">
+
+  <!-- Background Glow Orbs -->
+  <div class="bg-orb orb-purple"></div>
+  <div class="bg-orb orb-blue"></div>
 
   <!-- Navbar -->
   <header class="sticky top-0 z-50 backdrop-blur-lg bg-[#0b1120]/80 border-b border-white/10">
@@ -72,28 +140,28 @@
     <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-14 items-center">
 
       <div>
-        <span class="px-4 py-2 rounded-full glass text-cyan-300 text-sm inline-block mb-6">
+        <span class="px-4 py-2 rounded-full glass text-cyan-300 text-sm inline-block mb-6 animate-reveal" style="--delay: 0.1s;">
           Latest Insights & Tech Articles
         </span>
 
-        <h2 class="text-5xl md:text-6xl font-extrabold leading-tight mb-6">
+        <h2 class="text-5xl md:text-6xl font-extrabold leading-tight mb-6 animate-reveal" style="--delay: 0.2s;">
           Explore the Future of
           <span class="gradient-text">JSON & Web Technologies</span>
         </h2>
 
-        <p class="text-gray-300 text-lg leading-relaxed mb-8 max-w-xl">
+        <p class="text-gray-300 text-lg leading-relaxed mb-8 max-w-xl animate-reveal" style="--delay: 0.3s;">
           Discover tutorials, development strategies, API integration guides,
           backend optimization tips, and modern JSON workflows designed for developers.
         </p>
 
-        <div class="flex flex-wrap gap-4">
-          <button class="bg-gradient-to-r from-cyan-500 to-blue-600 px-7 py-3 rounded-full font-semibold hover:scale-105 transition">
+        <div class="flex flex-wrap gap-4 animate-reveal" style="--delay: 0.4s;">
+          <button class="bg-gradient-to-r from-cyan-500 to-blue-600 px-7 py-3 rounded-full font-semibold hover:scale-105 transition shadow-lg shadow-cyan-500/20">
             Read Articles
           </button>
         </div>
       </div>
 
-      <div class="glass rounded-3xl p-8 border border-white/10 shadow-2xl">
+      <div class="glass rounded-3xl p-8 border border-white/10 shadow-2xl animate-reveal" style="--delay: 0.3s;">
         <img
           src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=1200&auto=format&fit=crop"
           alt="Blog Illustration"
@@ -107,7 +175,7 @@
   <section class="px-6 py-10">
     <div class="max-w-7xl mx-auto">
 
-      <div class="flex items-center justify-between mb-10 flex-wrap gap-4">
+      <div class="flex items-center justify-between mb-10 flex-wrap gap-4 reveal-on-scroll">
         <div>
           <h3 class="text-4xl font-bold mb-3">Featured Articles</h3>
           <p class="text-gray-400">Stay updated with the latest trends in development.</p>
@@ -117,7 +185,7 @@
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
 
         <!-- Card 1 -->
-        <article class="glass rounded-3xl overflow-hidden card-hover">
+        <article class="glass rounded-3xl overflow-hidden card-hover reveal-on-scroll">
           <img
             src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1200&auto=format&fit=crop"
             class="w-full h-56 object-cover"
@@ -150,7 +218,7 @@
         </article>
 
         <!-- Card 2 -->
-        <article class="glass rounded-3xl overflow-hidden card-hover">
+        <article class="glass rounded-3xl overflow-hidden card-hover reveal-on-scroll">
             <img
                 src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&w=1200&auto=format&fit=crop"
                 class="w-full h-56 object-cover"
@@ -182,8 +250,9 @@
                 </div>
             </div>
         </article>
+
         <!-- Card 3 -->
-        <article class="glass rounded-3xl overflow-hidden card-hover">
+        <article class="glass rounded-3xl overflow-hidden card-hover reveal-on-scroll">
           <img
             src="https://images.unsplash.com/photo-1526379095098-d400fd0bf935?q=80&w=1200&auto=format&fit=crop"
             class="w-full h-56 object-cover"
@@ -230,6 +299,20 @@
     </div>
   </footer>
 
+  <!-- Scroll Reveal Script -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const reveals = document.querySelectorAll(".reveal-on-scroll");
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("active");
+          }
+        });
+      }, { threshold: 0.1 });
+      reveals.forEach((el) => observer.observe(el));
+    });
+  </script>
+
 </body>
 </html>
-```
