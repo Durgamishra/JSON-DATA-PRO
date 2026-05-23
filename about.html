@@ -21,44 +21,116 @@
       background: #050816;
       color: white;
       overflow-x: hidden;
+      position: relative;
     }
 
     .glass {
-      background: rgba(255,255,255,0.05);
+      background: rgba(255, 255, 255, 0.03);
       backdrop-filter: blur(12px);
-      border: 1px solid rgba(255,255,255,0.1);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
     }
 
     .gradient-text {
-      background: linear-gradient(90deg, #00c6ff, #0072ff);
+      background: linear-gradient(90deg, #00c6ff, #b026ff);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .floating {
-      animation: float 4s ease-in-out infinite;
+      animation: float 5s ease-in-out infinite;
     }
 
     @keyframes float {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-12px); }
-      100% { transform: translateY(0px); }
+      0% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-15px) rotate(1deg); }
+      100% { transform: translateY(0px) rotate(0deg); }
     }
 
     .glow {
-      box-shadow: 0 0 30px rgba(0, 114, 255, 0.4);
+      box-shadow: 0 0 40px rgba(176, 38, 255, 0.25);
+      transition: box-shadow 0.3s ease;
+    }
+    .glow:hover {
+      box-shadow: 0 0 50px rgba(0, 198, 255, 0.4);
     }
 
+    .skill-card {
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
     .skill-card:hover {
-      transform: translateY(-8px);
-      transition: 0.3s ease;
-      border-color: #00c6ff;
+      transform: translateY(-10px) scale(1.02);
+      border-color: rgba(0, 198, 255, 0.5);
+      box-shadow: 0 15px 30px rgba(0, 198, 255, 0.15);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    /* Background Orbs */
+    .bg-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      z-index: -1;
+      opacity: 0.15;
+      pointer-events: none;
+      animation: pulseOrb 12s infinite alternate ease-in-out;
+    }
+    .orb-purple {
+      background: #b026ff;
+      width: 450px;
+      height: 450px;
+      top: 10%;
+      left: -15%;
+    }
+    .orb-cyan {
+      background: #00c6ff;
+      width: 500px;
+      height: 500px;
+      bottom: 15%;
+      right: -15%;
+      animation-delay: -6s;
+    }
+
+    @keyframes pulseOrb {
+      0% { transform: scale(1) translate(0, 0); opacity: 0.12; }
+      100% { transform: scale(1.15) translate(30px, 30px); opacity: 0.25; }
+    }
+
+    /* Entrance Animations */
+    .animate-reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      animation: reveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation-delay: var(--delay, 0s);
+    }
+
+    @keyframes reveal {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Scroll Reveal */
+    .reveal-on-scroll {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal-on-scroll.active {
+      opacity: 1;
+      transform: translateY(0);
     }
   </style>
 </head>
 
 <body>
+
+  <!-- Background Glow Orbs -->
+  <div class="bg-orb orb-purple"></div>
+  <div class="bg-orb orb-cyan"></div>
 
   <!-- Navbar -->
   <nav class="w-full px-6 py-5 flex justify-between items-center glass fixed top-0 z-50">
@@ -93,16 +165,16 @@
       <!-- Left Content -->
       <div>
 
-        <p class="uppercase tracking-[4px] text-cyan-400 mb-4">
+        <p class="uppercase tracking-[4px] text-cyan-400 mb-4 animate-reveal" style="--delay: 0.1s;">
           About The Developer
         </p>
 
-        <h1 class="text-5xl md:text-6xl font-bold leading-tight mb-6">
+        <h1 class="text-5xl md:text-6xl font-bold leading-tight mb-6 animate-reveal" style="--delay: 0.2s;">
           Building Smart
           <span class="gradient-text">Developer Tools</span>
         </h1>
 
-        <p class="text-gray-300 text-lg leading-relaxed mb-8">
+        <p class="text-gray-300 text-lg leading-relaxed mb-8 animate-reveal" style="--delay: 0.3s;">
           Passionate and growth-driven developer focused on building modern,
           efficient, and user-friendly web applications.
           I enjoy transforming complex ideas into practical digital solutions
@@ -110,7 +182,7 @@
           Data Structures & Algorithms, and backend technologies.
         </p>
 
-        <p class="text-gray-300 text-lg leading-relaxed mb-8">
+        <p class="text-gray-300 text-lg leading-relaxed mb-8 animate-reveal" style="--delay: 0.4s;">
           Recently, I developed
           <span class="text-cyan-400 font-semibold">JSON Data Pro</span>
           — an interactive JSON exploration and visualization platform
@@ -118,7 +190,7 @@
           organized datasets, and intuitive navigation.
         </p>
 
-        <div class="text-gray-300 text-lg leading-relaxed mb-8">
+        <div class="text-gray-300 text-lg leading-relaxed mb-8 animate-reveal" style="--delay: 0.5s;">
 
           <p class="mb-4 font-semibold text-cyan-400">
             I am deeply interested in:
@@ -142,19 +214,19 @@
 
         </div>
 
-        <p class="text-gray-300 text-lg leading-relaxed mb-8">
+        <p class="text-gray-300 text-lg leading-relaxed mb-8 animate-reveal" style="--delay: 0.6s;">
           I believe in learning by building real-world projects,
           solving challenges consistently, and pushing beyond comfort zones
           to evolve both technically and creatively.
         </p>
 
-        <p class="text-gray-300 text-lg leading-relaxed mb-8">
+        <p class="text-gray-300 text-lg leading-relaxed mb-8 animate-reveal" style="--delay: 0.7s;">
           Currently focused on sharpening my software engineering skills,
           exploring scalable architectures, and creating impactful projects
           that combine functionality with clean user experiences.
         </p>
 
-        <div class="flex gap-4 flex-wrap">
+        <div class="flex gap-4 flex-wrap animate-reveal" style="--delay: 0.8s;">
 
           <a href="https://json-data-pro.vercel.app/"
              target="_blank"
@@ -176,7 +248,7 @@
       </div>
 
       <!-- Right Profile Card -->
-      <div class="flex justify-center">
+      <div class="flex justify-center animate-reveal" style="--delay: 0.4s;">
 
         <div class="glass rounded-3xl p-8 floating glow max-w-md w-full">
 
@@ -232,17 +304,17 @@
 
     <div class="max-w-6xl mx-auto text-center">
 
-      <h2 class="text-4xl font-bold mb-4">
+      <h2 class="text-4xl font-bold mb-4 reveal-on-scroll">
         My <span class="gradient-text">Skills</span>
       </h2>
 
-      <p class="text-gray-400 max-w-2xl mx-auto mb-14">
+      <p class="text-gray-400 max-w-2xl mx-auto mb-14 reveal-on-scroll">
         Technologies and areas I continuously improve while building real-world projects.
       </p>
 
       <div class="grid md:grid-cols-3 gap-8">
 
-        <div class="glass rounded-2xl p-8 skill-card transition">
+        <div class="glass rounded-2xl p-8 skill-card transition reveal-on-scroll">
 
           <div class="text-5xl mb-4">💻</div>
 
@@ -256,7 +328,7 @@
 
         </div>
 
-        <div class="glass rounded-2xl p-8 skill-card transition">
+        <div class="glass rounded-2xl p-8 skill-card transition reveal-on-scroll">
 
           <div class="text-5xl mb-4">⚙️</div>
 
@@ -270,7 +342,7 @@
 
         </div>
 
-        <div class="glass rounded-2xl p-8 skill-card transition">
+        <div class="glass rounded-2xl p-8 skill-card transition reveal-on-scroll">
 
           <div class="text-5xl mb-4">🧠</div>
 
@@ -295,7 +367,7 @@
 
     <div class="max-w-6xl mx-auto">
 
-      <div class="text-center mb-16">
+      <div class="text-center mb-16 reveal-on-scroll">
 
         <h2 class="text-4xl font-bold mb-4">
           Featured <span class="gradient-text">Project</span>
@@ -307,7 +379,7 @@
 
       </div>
 
-      <div class="glass rounded-3xl overflow-hidden grid md:grid-cols-2">
+      <div class="glass rounded-3xl overflow-hidden grid md:grid-cols-2 reveal-on-scroll">
 
         <div class="p-10 flex flex-col justify-center">
 
@@ -364,6 +436,21 @@
     © 2026 JSON Data Pro • Crafted with passion and creativity.
 
   </footer>
+
+  <!-- Scroll Reveal Script -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const reveals = document.querySelectorAll(".reveal-on-scroll");
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("active");
+          }
+        });
+      }, { threshold: 0.1 });
+      reveals.forEach((el) => observer.observe(el));
+    });
+  </script>
 
 </body>
 </html>
