@@ -335,7 +335,7 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.02em; }
     transform: rotateY(0) rotateX(0);
 }
 
-* ── Output window loading glow ── */
+/* ── Output window loading glow ── */
 #json-output.is-loading,
 .window-body.is-json-loading {
     position: relative;
@@ -367,6 +367,7 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.02em; }
     0%, 100% { opacity: 0.55; transform: scale(0.995); }
     50% { opacity: 1; transform: scale(1.01); }
 }
+
 /* Window Header */
 .window-header {
     display: flex;
@@ -697,6 +698,7 @@ footer {
     .demo-container { padding: 2rem; }
     .footer-container { flex-direction: column; }
 }
+
 /* ================= Modern Page Loader ================= */
 .page-loader {
     position: fixed;
@@ -862,7 +864,164 @@ footer {
 
 .loader-skip .muted { color: #94a3b8; }
 
-/* Hide when finished */
-.page-loader.loader-finish {
-    opacity: 0;
+
+/* ================= Premium Web Loader ================= */
+.premium-loader-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
 }
+
+.premium-ui-layer {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 500px;
+    padding: 2rem;
+    text-align: center;
+    pointer-events: none;
+}
+
+.premium-glass-panel {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 3rem 2rem;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.premium-logo-container {
+    margin-bottom: 2rem;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.premium-logo-text {
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    background: linear-gradient(to right, var(--cyan), var(--neon-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 10px rgba(0, 229, 255, 0.5));
+}
+
+.premium-progress-section {
+    margin-top: 3rem;
+}
+
+.premium-progress-container {
+    position: relative;
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.premium-progress-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--cyan), var(--neon-purple), var(--neon-blue));
+    background-size: 200% 100%;
+    animation: premiumShimmer 2s infinite linear;
+    box-shadow: 0 0 15px var(--cyan);
+    transition: width 0.3s ease-out;
+}
+
+@keyframes premiumShimmer {
+    0% { background-position: 0% 0%; }
+    100% { background-position: -200% 0%; }
+}
+
+.premium-status-container {
+    margin-top: 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    height: 1.2rem;
+    opacity: 0.8;
+}
+
+.premium-percentage-text {
+    position: absolute;
+    top: -25px;
+    right: 0;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--cyan);
+}
+
+.premium-hud-element {
+    position: absolute;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--cyan);
+    opacity: 0.4;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    z-index: 5;
+}
+
+.premium-hud-top-left { top: 20px; left: 20px; text-align: left; }
+.premium-hud-top-right { top: 20px; right: 20px; text-align: right; }
+.premium-hud-bottom-left { bottom: 20px; left: 20px; text-align: left; }
+.premium-hud-bottom-right { bottom: 20px; right: 20px; text-align: right; }
+
+.premium-energy-pulse {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: white;
+    opacity: 0;
+    z-index: 10000;
+    pointer-events: none;
+}
+
+/* ================= Interactive Animations ================= */
+@keyframes floatWindow {
+    0%, 100% { transform: rotateY(-5deg) rotateX(5deg) translateY(0); }
+    50% { transform: rotateY(-7deg) rotateX(7deg) translateY(-10px); }
+}
+
+.code-window.floating {
+    animation: floatWindow 6s infinite ease-in-out;
+}
+
+.input-area {
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.input-area:focus-within {
+    box-shadow: 0 0 30px rgba(0, 240, 255, 0.15);
+    border-color: var(--neon-blue);
+}
+
+
+/* ================= Scroll Reveal ================= */
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform, opacity;
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
