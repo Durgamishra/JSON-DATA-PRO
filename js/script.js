@@ -1,389 +1,181 @@
-document.addEventListener("DOMContentLoaded", () => {
+// ==========================================
+// 🚀 VERCEL SERVERLESS API
+// File: /api/generate.js
+// ==========================================
+
+module.exports = async function handler(req, res) {
 
     // ==========================================
-    // ✨ HERO PARTICLE SYSTEM
+    // ✅ ALLOW ONLY POST
     // ==========================================
-    const particleCanvas = document.getElementById("hero-particles");
-    if (particleCanvas) {
-        const ctx = particleCanvas.getContext("2d");
-        let particles = [];
-        const PARTICLE_COUNT = 60;
-
-        function resizeCanvas() {
-            particleCanvas.width = window.innerWidth;
-            particleCanvas.height = window.innerHeight;
-        }
-        resizeCanvas();
-        window.addEventListener("resize", resizeCanvas);
-
-        class Particle {
-            constructor() {
-                this.reset();
-            }
-            reset() {
-                this.x = Math.random() * particleCanvas.width;
-                this.y = Math.random() * particleCanvas.height;
-                this.size = Math.random() * 2 + 0.5;
-                this.speedX = (Math.random() - 0.5) * 0.4;
-                this.speedY = (Math.random() - 0.5) * 0.4;
-                this.opacity = Math.random() * 0.5 + 0.1;
-                this.opacityDirection = Math.random() > 0.5 ? 1 : -1;
-                // Purple / Blue-Gray / White palette
-                const colors = [
-                    "176, 38, 255",  // neon-purple
-                    "120, 119, 198", // slate-indigo
-                    "255, 255, 255"  // white
-                ];
-                this.color = colors[Math.floor(Math.random() * colors.length)];
-            }
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-                // Twinkle
-                this.opacity += this.opacityDirection * 0.003;
-                if (this.opacity >= 0.6) this.opacityDirection = -1;
-                if (this.opacity <= 0.05) this.opacityDirection = 1;
-                // Wrap around edges
-                if (this.x < 0) this.x = particleCanvas.width;
-                if (this.x > particleCanvas.width) this.x = 0;
-                if (this.y < 0) this.y = particleCanvas.height;
-                if (this.y > particleCanvas.height) this.y = 0;
-            }
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(${this.color}, ${this.opacity})`;
-                ctx.fill();
-            }
-        }
-
-        // Initialize particles
-        for (let i = 0; i < PARTICLE_COUNT; i++) {
-            particles.push(new Particle());
-        }
-
-        // Draw connecting lines between nearby particles
-        function drawLines() {
-            for (let i = 0; i < particles.length; i++) {
-                for (let j = i + 1; j < particles.length; j++) {
-                    const dx = particles[i].x - particles[j].x;
-                    const dy = particles[i].y - particles[j].y;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist < 120) {
-                        const lineOpacity = (1 - dist / 120) * 0.15;
-                        ctx.beginPath();
-                        ctx.moveTo(particles[i].x, particles[i].y);
-                        ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.strokeStyle = `rgba(176, 38, 255, ${lineOpacity})`;
-                        ctx.lineWidth = 0.5;
-                        ctx.stroke();
-                    }
-                }
-            }
-        }
-
-        function animateParticles() {
-            ctx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
-            drawLines();
-            requestAnimationFrame(animateParticles);
-        }
-        animateParticles();
+    if (req.method !== "POST") {
+        return res.status(405).json({
+            success: false,
+            error: "Method Not Allowed"
+        });
     }
 
+    try {
 
-    // ==========================================
-    // 📦 DOM ELEMENTS
-    // ==========================================
-    const generateBtn  = document.getElementById("generate-btn");
-    const promptInput  = document.getElementById("prompt-input");
-    const jsonOutput   = document.getElementById("json-output");
-    const copyBtn      = document.getElementById("copy-btn");
-    const lineNumbers  = document.getElementById("line-numbers");
-
-    // ==========================================
-    // 🌐 API ROUTE
-    // ==========================================
-    const API_URL = "/api/generate";
-
-    // ==========================================
-    // 🚀 GENERATE BUTTON
-    // ==========================================
-    generateBtn.addEventListener("click", generateJSON);
-
-    promptInput.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            generateJSON();
-        }
-    });
-
-    // ==========================================
-    // 🧠 GENERATE JSON
-    // ==========================================
-    async function generateJSON() {
-
-        const prompt = promptInput.value.trim();
+        // ==========================================
+        // 📦 GET PROMPT
+        // ==========================================
+        const prompt = req.body?.prompt?.trim();
 
         if (!prompt) {
-            renderError("Please enter a prompt.");
-            return;
+            return res.status(400).json({
+                success: false,
+                error: "Prompt is required"
+            });
         }
 
-        setLoadingState(true);
+        // ==========================================
+        // 🔐 ENV VARIABLE
+        // ==========================================
+        const API_KEY = process.env.API_KEY;
 
-        try {
-            const result     = await fetchFromAI(prompt);
-            const jsonString = JSON.stringify(result, null, 2);
-
-            // FIX: set total line count upfront so numbers appear instantly
-            updateLineNumbers(jsonString.split("\n").length);
-
-            const highlightedHTML = syntaxHighlight(jsonString);
-
-            // FIX: pass jsonString so typewriter can track newlines live
-            await typeHTML(highlightedHTML, jsonOutput, jsonString, 8);
-
-        } catch (error) {
-            console.error("Frontend Error:", error);
-            renderError(error.message || "Something went wrong.");
-        } finally {
-            setLoadingState(false);
+        if (!API_KEY) {
+            return res.status(500).json({
+                success: false,
+                error: "API_KEY is missing"
+            });
         }
-    }
 
-    // ==========================================
-    // 🌐 FETCH API
-    // ==========================================
-    async function fetchFromAI(prompt) {
+        // ==========================================
+        // 🧠 SYSTEM PROMPT
+        // ==========================================
+        const systemPrompt = `
+You are an expert JSON data generator.
 
+Rules:
+- Return ONLY valid JSON
+- No markdown
+- No explanations
+- No comments
+- Output must be parseable JSON
+`;
+
+        // ==========================================
+        // ⏱️ REQUEST TIMEOUT
+        // ==========================================
         const controller = new AbortController();
-        const timeout    = setTimeout(() => controller.abort(), 30000);
 
-        const response = await fetch(API_URL, {
-            method: "POST",
-            signal: controller.signal,
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ prompt })
-        });
+        const timeout = setTimeout(() => {
+            controller.abort();
+        }, 25000);
+
+        // ==========================================
+        // 🌐 OPENROUTER REQUEST
+        // ==========================================
+        const response = await fetch(
+            "https://openrouter.ai/api/v1/chat/completions",
+            {
+                method: "POST",
+                signal: controller.signal,
+                headers: {
+                    Authorization: `Bearer ${API_KEY}`,
+                    "Content-Type": "application/json",
+                    "HTTP-Referer": "https://json-data-pro.vercel.app",
+                    "X-Title": "Json Data Pro"
+                },
+                body: JSON.stringify({
+                    model: "openai/gpt-3.5-turbo",
+                    messages: [
+                        {
+                            role: "system",
+                            content: systemPrompt
+                        },
+                        {
+                            role: "user",
+                            content: prompt
+                        }
+                    ],
+                    temperature: 0,
+                    max_tokens: 1000
+                })
+            }
+        );
 
         clearTimeout(timeout);
 
-        let data;
-        try {
-            data = await response.json();
-        } catch {
-            throw new Error("Invalid response from server.");
-        }
-
+        // ==========================================
+        // ❌ API ERROR
+        // ==========================================
         if (!response.ok) {
-            throw new Error(data.error || `Server Error ${response.status}`);
+
+            const errorText = await response.text();
+
+            console.error("OpenRouter Error:", errorText);
+
+            return res.status(response.status).json({
+                success: false,
+                error: "AI request failed"
+            });
         }
 
-        return data;
-    }
+        // ==========================================
+        // 📦 PARSE RESPONSE
+        // ==========================================
+        const data = await response.json();
 
-    // ==========================================
-    // 🔢 UPDATE LINE NUMBERS
-    // FIX: accepts a number directly (no more splitting HTML strings)
-    // ==========================================
-    function updateLineNumbers(count) {
-        lineNumbers.innerHTML = Array.from(
-            { length: count },
-            (_, i) => i + 1
-        ).join("<br>");
-    }
+        let aiText =
+            data?.choices?.[0]?.message?.content?.trim();
 
-    // ==========================================
-    // 🎨 JSON SYNTAX HIGHLIGHTER
-    // FIX: removed indented template literals that injected
-    //      stray whitespace/newlines into <pre> output
-    // ==========================================
-    function syntaxHighlight(jsonString) {
+        if (!aiText) {
+            return res.status(500).json({
+                success: false,
+                error: "Empty AI response"
+            });
+        }
 
-        const escaped = jsonString
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;");
+        // ==========================================
+        // 🧹 CLEAN MARKDOWN
+        // ==========================================
+        aiText = aiText
+            .replace(/```json/gi, "")
+            .replace(/```/g, "")
+            .trim();
 
-        return escaped.replace(
-            /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(\.\d+)?([eE][+\-]?\d+)?)/g,
-            (match) => {
+        // ==========================================
+        // ✅ SAFE JSON PARSE
+        // ==========================================
+        let parsedJSON;
 
-                if (/^"/.test(match)) {
-                    // FIX: was multi-line template literal — now single line, no whitespace injection
-                    if (/:$/.test(match)) {
-                        return `<span class="json-key">${match.slice(0, -1)}</span>:`;
-                    }
-                    return `<span class="json-string">${match}</span>`;
-                }
-
-                if (/true|false/.test(match)) {
-                    return `<span class="json-boolean">${match}</span>`;
-                }
-
-                if (/null/.test(match)) {
-                    return `<span class="json-null">${match}</span>`;
-                }
-
-                return `<span class="json-number">${match}</span>`;
-            }
-        );
-    }
-
-    // ==========================================
-    // ⌨️ TYPEWRITER EFFECT
-    // FIX: live line-number updates on each newline char
-    // FIX: speed tuned — HTML tags skipped instantly,
-    //      visible chars typed at `speed` ms each
-    // ==========================================
-    function typeHTML(html, element, plainText, speed = 8) {
-
-        return new Promise((resolve) => {
-
-            let i          = 0;
-            let output     = "";
-            let lineCount  = 1;
-
-            element.innerHTML = "";
-            updateLineNumbers(lineCount);
-
-            // Pre-count total lines for reference
-            const totalLines = (plainText.match(/\n/g) || []).length + 1;
-
-            function type() {
-
-                if (i >= html.length) {
-                    // Ensure final count is exact
-                    updateLineNumbers(totalLines);
-                    resolve();
-                    return;
-                }
-
-                // Skip HTML tags instantly (no delay)
-                if (html[i] === "<") {
-                    const closeIdx = html.indexOf(">", i);
-                    if (closeIdx !== -1) {
-                        output += html.slice(i, closeIdx + 1);
-                        i       = closeIdx + 1;
-                        element.innerHTML = output;
-                        requestAnimationFrame(type);
-                        return;
-                    }
-                }
-
-                // Skip HTML entities as single units (no delay)
-                if (html[i] === "&") {
-                    const semiIdx = html.indexOf(";", i);
-                    if (semiIdx !== -1 && semiIdx - i <= 6) {
-                        output += html.slice(i, semiIdx + 1);
-                        i       = semiIdx + 1;
-                        element.innerHTML = output;
-                        setTimeout(type, speed);
-                        return;
-                    }
-                }
-
-                const char = html[i];
-                output    += char;
-                element.innerHTML = output;
-
-                // FIX: increment line count live when a newline is typed
-                if (char === "\n") {
-                    lineCount++;
-                    updateLineNumbers(lineCount);
-                }
-
-                i++;
-                setTimeout(type, speed);
-            }
-
-            type();
-        });
-    }
-
-    // ==========================================
-    // 📋 COPY BUTTON
-    // ==========================================
-    copyBtn.addEventListener("click", copyJSON);
-
-    async function copyJSON() {
         try {
-            await navigator.clipboard.writeText(jsonOutput.innerText);
-            copyBtn.innerHTML = '<i class="ph ph-check"></i>';
-            setTimeout(() => {
-                copyBtn.innerHTML = '<i class="ph ph-copy"></i>';
-            }, 1500);
-        } catch (error) {
-            console.error("Copy Error:", error);
-            renderError("Failed to copy JSON.");
+
+            parsedJSON = JSON.parse(aiText);
+
+        } catch {
+
+            console.error("Invalid JSON:", aiText);
+
+            return res.status(500).json({
+                success: false,
+                error: "AI returned invalid JSON",
+                raw: aiText
+            });
         }
-    }
 
-    // ==========================================
-    // ⚡ LOADING STATE
-    // ==========================================
-    function setLoadingState(isLoading) {
+        // ==========================================
+        // 🚀 SUCCESS
+        // ==========================================
+        return res.status(200).json(parsedJSON);
 
-        generateBtn.disabled = isLoading;
+    } catch (error) {
 
-        if (isLoading) {
-            generateBtn.innerHTML = `<i class="ph ph-spinner ph-spin"></i> Generating...`;
-            jsonOutput.innerHTML  = `<span class="json-comment">// Generating JSON...</span>`;
-            updateLineNumbers(1);
-        } else {
-            generateBtn.innerHTML = `Generate JSON <i class="ph ph-arrow-right"></i>`;
+        console.error("SERVER ERROR:", error);
+
+        // Timeout error
+        if (error.name === "AbortError") {
+            return res.status(408).json({
+                success: false,
+                error: "Request timeout"
+            });
         }
-    }
 
-    // ==========================================
-    // ❌ ERROR UI
-    // ==========================================
-    function renderError(message) {
-        jsonOutput.innerHTML = `<span class="json-comment" style="color:#ff5555;">// ERROR:\n// ${message}</span>`;
-        updateLineNumbers(2);
-    }
-
-    // ==========================================
-    // 🎬 DEMO TERMINAL ANIMATION
-    // FIX: speed reduced from 15ms → 6ms for snappier feel
-    // ==========================================
-    const demoTerminal = document.getElementById("demo-output");
-    const termLoading  = document.querySelector(".term-loading");
-
-    let demoPlayed = false;
-
-    const demoJson = `{
-  "server": {
-    "port": 8080,
-    "dev_mode": true
-  }
-}`;
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting && !demoPlayed) {
-                demoPlayed = true;
-
-                setTimeout(() => {
-                    termLoading.style.display = "block";
-
-                    setTimeout(async () => {
-                        termLoading.style.display = "none";
-                        const highlighted = syntaxHighlight(demoJson);
-                        // FIX: speed 6ms — fast enough to feel snappy, slow enough to read
-                        await typeHTML(highlighted, demoTerminal, demoJson, 6);
-                    }, 1200);
-
-                }, 500);
-            }
+        return res.status(500).json({
+            success: false,
+            error: "Internal Server Error"
         });
-    }, { threshold: 0.5 });
-
-    const demoSection = document.querySelector(".demo-terminal");
-    if (demoSection) observer.observe(demoSection);
-
-});
+    }
+}
