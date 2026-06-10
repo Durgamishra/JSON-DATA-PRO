@@ -14,12 +14,49 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Modern Loading Screen -->
+    <div id="page-loader" class="page-loader" aria-hidden="true">
+        <div class="loader-backdrop" aria-hidden="true"></div>
+        <div class="loader-card glass-panel" role="status" aria-live="polite">
+            <div class="loader-top">
+                <div class="loader-logo">
+                    <span class="loader-dot"></span>
+                    <span class="loader-brand">Json Data <strong>Pro</strong></span>
+                </div>
+                <div class="loader-status" id="loader-status">Initializing AI engine…</div>
+            </div>
+
+            <div class="loader-progress">
+                <div class="loader-bar" aria-hidden="true">
+                    <span class="loader-bar-fill" id="loader-bar-fill"></span>
+                </div>
+
+            </div>
+
+            <div class="loader-thumbs" aria-hidden="true">
+                <span class="thumb t1"></span>
+                <span class="thumb t2"></span>
+                <span class="thumb t3"></span>
+            </div>
+
+            <div class="loader-hint">
+                <i class="ph ph-sparkle text-neon-purple"></i>
+                <span>Loading the generator UI…</span>
+            </div>
+
+            <div class="loader-skip">
+                <span>Tip:</span> <span class="muted">Use “Generate JSON” after typing your prompt.</span>
+            </div>
+        </div>
+    </div>
+
     <!-- Background Effects -->
     <div class="bg-grid"></div>
     <div class="glow-orb orb-1"></div>
 
     <!-- Hero Particle Canvas -->
     <canvas id="hero-particles"></canvas>
+
 
     <!-- Sticky Navbar -->
     <nav class="navbar">
@@ -178,6 +215,8 @@
             <p>&copy; 2026 Json Data Pro. All rights reserved.</p>
         </div>
     </footer>
-    <script src="/js/script.js?v=2.0"></script>
+    <script src="js/loader.js"></script>
+    <script src="js/script.js?v=2.0"></script>
 </body>
 </html>
+
