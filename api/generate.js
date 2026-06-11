@@ -237,7 +237,7 @@ OUTPUT VALIDATION: STRICT
                     "X-Title": "Json Data Pro"
                 },
                 body: JSON.stringify({
-                    model: "nvidia/nemotron-3.5-content-safety:free",
+                    model: "openai/gpt-3.5-turbo",
                     messages: [
                         {
                             role: "system",
