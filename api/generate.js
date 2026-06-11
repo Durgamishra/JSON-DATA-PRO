@@ -237,7 +237,7 @@ OUTPUT VALIDATION: STRICT
                     "X-Title": "Json Data Pro"
                 },
                 body: JSON.stringify({
-                    model: "google/gemma-4-31b-it:free",
+                    model: "nvidia/nemotron-3.5-content-safety:free",
                     messages: [
                         {
                             role: "system",
